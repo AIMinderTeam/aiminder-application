@@ -11,8 +11,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="calendar"
+        name="(calendar)/index"
         options={{
+          title: "캘린더",
           tabBarLabel: "캘린더",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialCommunityIcons name="calendar-month-outline" size={size} color={color} />
@@ -20,8 +21,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="timetable"
+        name="(timetable)/index"
         options={{
+          title: "타임테이블",
           tabBarLabel: "타임테이블",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialCommunityIcons name="timetable" size={size} color={color} />
@@ -29,11 +31,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="goals"
+        name="(goals)/index"
         options={{
+          title: "목표관리",
           tabBarLabel: "목표관리",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <MaterialCommunityIcons name="target" size={size} color={color} />
+            <MaterialCommunityIcons name="checkbox-marked-outline" size={size} color={color} />
           ),
         }}
       />
