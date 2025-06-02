@@ -53,7 +53,8 @@ export default function CalendarScreen() {
         style={styles.fab}
         label="새 일정"
         onPress={showModal}
-        variant="primary"
+        mode="elevated"
+        color="white"
       />
     </View>
   );
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 30
+    bottom: 30,
+    backgroundColor: '#4395E6'
   }
 });

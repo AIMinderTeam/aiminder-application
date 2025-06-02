@@ -14,10 +14,10 @@ interface AgendaViewProps {
 }
 
 const theme: CalendarTheme = {
-  agendaDayTextColor: '#6200ee',
-  agendaDayNumColor: '#6200ee',
-  agendaTodayColor: '#6200ee',
-  agendaKnobColor: '#6200ee'
+  agendaDayTextColor: '#4395E6',
+  agendaDayNumColor: '#4395E6',
+  agendaTodayColor: '#4395E6',
+  agendaKnobColor: '#4395E6'
 };
 
 export const AgendaView = React.memo<AgendaViewProps>(({
