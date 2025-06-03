@@ -98,6 +98,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         )}
         dayComponent={renderDayComponent}
         theme={AGENDA_THEME}
+        monthFormat={"yyyy년 MM월"}
         showClosingKnob
         hideExtraDays
       />
