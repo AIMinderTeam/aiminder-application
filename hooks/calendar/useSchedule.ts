@@ -1,47 +1,9 @@
 import * as React from 'react';
 import {AgendaItem, Schedule} from '@/domain/schedule';
-
-// CalendarScreen 컴포넌트 내부에서 초기 일정 데이터 설정
-let scheduleExample = [
-  {
-    id: '1',
-    title: '팀 미팅',
-    date: '2025-06-03',
-    time: '10:00',
-    description: '프로젝트 진행 상황 공유'
-  },
-  {
-    id: '2',
-    title: '점심 약속',
-    date: '2025-06-03',
-    time: '12:30',
-    description: '팀원들과 맛집 탐방'
-  },
-  {
-    id: '3',
-    title: '병원 예약',
-    date: '2025-06-05',
-    time: '14:00',
-    description: '정기 건강 검진'
-  },
-  {
-    id: '4',
-    title: '운동',
-    date: '2025-06-07',
-    time: '18:00',
-    description: '헬스장 PT 세션'
-  },
-  {
-    id: '5',
-    title: '가족 모임',
-    date: '2025-06-09',
-    time: '19:00',
-    description: '부모님 댁 저녁 식사'
-  }
-];
+import {scheduleMockData} from "@/mock/schedule";
 
 export const useSchedules = () => {
-  const [schedules, setSchedules] = React.useState<Schedule[]>(scheduleExample);
+  const [schedules, setSchedules] = React.useState<Schedule[]>(scheduleMockData);
   const [selectedDate, setSelectedDate] = React.useState('');
   const [visible, setVisible] = React.useState(false);
   const [editingSchedule, setEditingSchedule] = React.useState<Schedule | null>(null);
