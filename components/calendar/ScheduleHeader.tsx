@@ -2,7 +2,7 @@ import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useTheme} from 'react-native-paper';
 
-export const DayHeader = (() => {
+export const ScheduleHeader = (() => {
   const theme = useTheme();
 
   return (

@@ -1,59 +1,83 @@
 import * as React from "react";
-import { View, ScrollView } from "react-native";
-import { Appbar, Card, Button, FAB, Text, ProgressBar } from "react-native-paper";
+import {View, ScrollView, StyleSheet} from "react-native";
+import {Appbar, Text, Surface} from "react-native-paper";
+import {useDateStore} from "@/stores/DateStore";
+
+const HOURS = Array.from({length: 24}, (_, i) => 
+  `${String(i).padStart(2, '0')}:00`
+);
 
 export default function TimetableScreen() {
-  const [progress, setProgress] = React.useState(0.5);
+  const {selectedDate} = useDateStore()
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.Content title="타임테이블" />
-        <Appbar.Action icon="calendar" onPress={() => {}} />
+        <Appbar.Content title="타임테이블"/>
+        <Appbar.Action icon="calendar" onPress={() => {}}/>
+        <Appbar.Action icon="bell-outline" onPress={() => {}}/>
       </Appbar.Header>
 
-      <Card style={{ margin: 16, borderRadius: 12 }}>
-        <Card.Title title="2024-06-02 (일)" />
-        <Card.Content>
-          <Text variant="bodyMedium">오늘의 일정 진행률</Text>
-          <ProgressBar progress={progress} style={{ marginTop: 8, height: 8, borderRadius: 8 }} />
-          <Text style={{ marginTop: 4 }}>{Math.round(progress * 100)}%</Text>
-        </Card.Content>
-      </Card>
+      <View style={styles.dateHeader}>
+        <Text variant="titleLarge">{selectedDate}</Text>
+      </View>
 
-      <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-        <Card style={{ marginVertical: 8 }}>
-          <Card.Title title="10:00 - 11:00" subtitle="업무 집중" left={(props) => <Appbar.Action {...props} icon="briefcase-outline" />} />
-          <Card.Content>
-            <Text>기획안 작성 및 피드백</Text>
-          </Card.Content>
-          <Card.Actions>
-            <Button icon="check" onPress={() => setProgress(Math.min(1, progress + 0.2))}>완료</Button>
-            <Button icon="pencil" onPress={() => {}}>편집</Button>
-          </Card.Actions>
-        </Card>
-        <Card style={{ marginVertical: 8 }}>
-          <Card.Title title="14:00 - 15:00" subtitle="자기계발" left={(props) => <Appbar.Action {...props} icon="book-outline" />} />
-          <Card.Content>
-            <Text>React Native 공부</Text>
-          </Card.Content>
-          <Card.Actions>
-            <Button icon="check" onPress={() => setProgress(Math.min(1, progress + 0.2))}>완료</Button>
-          </Card.Actions>
-        </Card>
+      <ScrollView>
+        {HOURS.map((time, index) => (
+          <View key={time} style={styles.timeRow}>
+            <View style={styles.timeCell}>
+              <Text style={styles.timeText}>{time}</Text>
+            </View>
+            <Surface style={[
+              styles.scheduleCell,
+              index % 2 === 0 ? styles.evenRow : styles.oddRow
+            ]}>
+              <Text> </Text>
+            </Surface>
+          </View>
+        ))}
       </ScrollView>
-
-      <FAB
-        icon="plus"
-        style={{
-          position: "absolute",
-          right: 20,
-          bottom: 30,
-        }}
-        label="새 블록"
-        onPress={() => {}}
-        variant="primary"
-      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  dateHeader: {
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  timeRow: {
+    flexDirection: 'row',
+    height: 60,
+  },
+  timeCell: {
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+    backgroundColor: '#f8f8f8',
+  },
+  timeText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  scheduleCell: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 8,
+  },
+  evenRow: {
+    backgroundColor: '#ffffff',
+  },
+  oddRow: {
+    backgroundColor: '#f9f9f9',
+  },
+});

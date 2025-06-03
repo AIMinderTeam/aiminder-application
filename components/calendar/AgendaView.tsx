@@ -6,8 +6,9 @@ import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
 import {DayView} from "@/components/calendar/DayView";
 import {View} from "react-native";
-import {DayHeader} from "@/components/calendar/DayHeader";
+import {ScheduleHeader} from "@/components/calendar/ScheduleHeader";
 import {ScheduleDetailModal} from './ScheduleDetailModal';
+import {useDateStore} from "@/stores/DateStore";
 
 interface AgendaViewProps {
   items: { [key: string]: AgendaItem[] };
@@ -35,17 +36,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   
   const handleSchedulePress = React.useCallback((schedule: Schedule) => {
     setSelectedSchedule(schedule);
-  }, []);
+  }, [setSelectedSchedule]);
 
   const handleCloseDetail = React.useCallback(() => {
     setSelectedSchedule(null);
-  }, []);
-
-  const today = React.useMemo(
-    () => new Date().toISOString().split('T')[0],
-    []
-  );
-  const currentSelected = selected || today;
+  }, [setSelectedSchedule]);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(true);
   const handleCalendarToggle = React.useCallback(
     (opened: boolean) => {
@@ -66,6 +61,14 @@ export const AgendaView = React.memo<AgendaViewProps>(({
 
     return {start: toISO(start), end: toISO(end)};
   }, []);
+
+  const {selectedDate, setSelectedDate: setGlobalSelectedDate} = useDateStore()
+
+  const currentSelected = selectedDate;
+
+  const handleDateSelection = (day: string) => {
+    setGlobalSelectedDate(day)
+  }
 
   const displayedItems = React.useMemo(() => {
     if (isCalendarOpen) {
@@ -88,7 +91,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       cursor.setDate(cursor.getDate() + 1);
     }
     return filtered;
-  }, [items, isCalendarOpen, getWeekRange]);
+  }, [items, isCalendarOpen, getWeekRange, currentSelected]);
 
   const agendaRef = React.useRef<any>(null);
   const handleDayPress = React.useCallback(
@@ -97,6 +100,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       requestAnimationFrame(() => {
         agendaRef.current?.toggleCalendarPosition?.(false);
       });
+      handleDateSelection(day.dateString)
     },
     [onDayPress, agendaRef.current]
   );
@@ -116,14 +120,14 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         />
       );
     },
-    [displayedItems, handleDayPress],
+    [displayedItems, handleDayPress, currentSelected],
   );
 
   const renderItem = React.useCallback(
     (item: AgendaItem, firstItemInDay: boolean) => {
       return (
         <View>
-          {firstItemInDay && <DayHeader />}
+          {firstItemInDay && <ScheduleHeader />}
           <ScheduleCard
             schedule={item}
             onPress={handleSchedulePress}
@@ -147,7 +151,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         }
         renderEmptyDate={() => (
           <View>
-            <DayHeader />
+            <ScheduleHeader />
             <EmptySchedule />
           </View>
         )}
