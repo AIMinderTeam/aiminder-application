@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';  // ← 추가
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Schedule, AgendaItem} from '@/domain/schedule';
 import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
@@ -28,17 +28,26 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onEditSchedule,
   onDeleteSchedule
 }) => {
+  const agendaRef = React.useRef<any>(null);
+  const handleDayPress = React.useCallback(
+    (day: { dateString: string }) => {
+      onDayPress(day);
+      requestAnimationFrame(() => {
+        agendaRef.current?.toggleCalendarPosition?.(false);
+      });
+    },
+    [onDayPress, agendaRef.current]
+  );
   const DayComponent = React.useCallback(
     ({ date, state }: { date: { dateString: string; day: number }; state: string }) => {
     const dateKey = date?.dateString ?? '';
     const schedules = items[dateKey] ?? [];
     const hasSchedules = schedules.length > 0;
-
-    const handlePress = () => {
-      if (dateKey) {
-        onDayPress({ dateString: dateKey });
-      }
-    };
+      const handlePress = () => {
+        if (dateKey) {
+          handleDayPress({ dateString: dateKey });
+        }
+      };
 
     return (
       <TouchableOpacity
@@ -79,14 +88,15 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       </TouchableOpacity>
     );
   },
-  [items, selected, onDayPress]
+  [items, selected, handleDayPress]
 );
 
   return (
     <Agenda
+      ref={agendaRef}
       items={items}
       selected={selected}
-      onDayPress={onDayPress}
+      onDayPress={handleDayPress}
       renderItem={(item: AgendaItem) => (
         <ScheduleCard
           schedule={item}

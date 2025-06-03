@@ -24,12 +24,10 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
     description: '',
   });
 
-  // 입력 값 변경을 위한 메모이제이션된 핸들러
   const handleChange = React.useCallback((field: string) => (
     (text: string) => setFormData(prev => ({...prev, [field]: text}))
-  ), []);
+  ), [setFormData]);
 
-  // 컴포넌트 마운트/editingSchedule 변경 시에만 실행
   React.useEffect(() => {
     if (editingSchedule) {
       setFormData({
