@@ -1,4 +1,3 @@
-// app/(tabs)/(calendar)/index.tsx
 import * as React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';

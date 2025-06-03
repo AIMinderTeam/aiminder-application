@@ -3,7 +3,6 @@ import { View, ScrollView } from "react-native";
 import { Appbar, Card, Button, FAB, Text, ProgressBar, Chip } from "react-native-paper";
 
 export default function GoalsScreen() {
-  // 목표 예시 데이터
   const goals = [
     {
       title: "React Native 앱 출시",
@@ -32,7 +31,6 @@ export default function GoalsScreen() {
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
 
-      {/* 목표 카드 리스트 */}
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         {goals.map((goal, idx) => (
           <Card key={idx} style={{ marginVertical: 8 }}>
@@ -65,7 +63,6 @@ export default function GoalsScreen() {
         ))}
       </ScrollView>
 
-      {/* 플로팅 목표 추가 버튼 */}
       <FAB
         icon="plus"
         style={{

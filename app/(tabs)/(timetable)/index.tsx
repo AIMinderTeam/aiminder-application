@@ -3,7 +3,6 @@ import { View, ScrollView } from "react-native";
 import { Appbar, Card, Button, FAB, Text, ProgressBar } from "react-native-paper";
 
 export default function TimetableScreen() {
-  // 진행률 예시 (50%)
   const [progress, setProgress] = React.useState(0.5);
 
   return (
@@ -13,7 +12,6 @@ export default function TimetableScreen() {
         <Appbar.Action icon="calendar" onPress={() => {}} />
       </Appbar.Header>
 
-      {/* 날짜 및 진행률 */}
       <Card style={{ margin: 16, borderRadius: 12 }}>
         <Card.Title title="2024-06-02 (일)" />
         <Card.Content>
@@ -23,7 +21,6 @@ export default function TimetableScreen() {
         </Card.Content>
       </Card>
 
-      {/* 시간별 일정 블록(목업) */}
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         <Card style={{ marginVertical: 8 }}>
           <Card.Title title="10:00 - 11:00" subtitle="업무 집중" left={(props) => <Appbar.Action {...props} icon="briefcase-outline" />} />
@@ -35,7 +32,6 @@ export default function TimetableScreen() {
             <Button icon="pencil" onPress={() => {}}>편집</Button>
           </Card.Actions>
         </Card>
-        {/* 추가 시간 블록 */}
         <Card style={{ marginVertical: 8 }}>
           <Card.Title title="14:00 - 15:00" subtitle="자기계발" left={(props) => <Appbar.Action {...props} icon="book-outline" />} />
           <Card.Content>
@@ -47,7 +43,6 @@ export default function TimetableScreen() {
         </Card>
       </ScrollView>
 
-      {/* 플로팅 추가 버튼 */}
       <FAB
         icon="plus"
         style={{
