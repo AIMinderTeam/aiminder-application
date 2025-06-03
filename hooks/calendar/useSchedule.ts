@@ -10,15 +10,24 @@ export const useSchedules = () => {
   const [formData, setFormData] = React.useState({
     title: '',
     time: '',
-    description: ''
+    description: '',
+    startDate: '',
+    endDate: '',
   });
+
 
   const showModal = React.useCallback(() => setVisible(true), []);
 
   const hideModal = React.useCallback(() => {
     setVisible(false);
     setEditingSchedule(null);
-    setFormData({title: '', time: '', description: ''});
+    setFormData({
+      title: '',
+      time: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+    });
   }, []);
 
   const handleSaveSchedule = React.useCallback(() => {
@@ -35,7 +44,6 @@ export const useSchedules = () => {
     } else {
       const newSchedule: Schedule = {
         id: Date.now().toString(),
-        date: selectedDate,
         ...formData
       };
       setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
@@ -48,7 +56,9 @@ export const useSchedules = () => {
     setFormData({
       title: schedule.title,
       time: schedule.time,
-      description: schedule.description
+      description: schedule.description,
+      startDate: schedule.startDate,
+      endDate: schedule.endDate,
     });
     showModal();
   }, []);
@@ -60,28 +70,30 @@ export const useSchedules = () => {
   }, []);
 
   const getAgendaItems = React.useCallback(() => {
-    const items: { [key: string]: AgendaItem[] } = {};
+    const items: {[key: string]: AgendaItem[]} = {};
+
+    /* 이번 달 모든 날짜 미리 생성 */
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
     for (let d = firstDay; d <= lastDay; d.setDate(d.getDate() + 1)) {
-      const dateString = d.toISOString().split('T')[0];
-      items[dateString] = [];
+      items[d.toISOString().split('T')[0]] = [];
     }
 
-    schedules.forEach((schedule) => {
-      if (!items[schedule.date]) {
-        items[schedule.date] = [];
+    /* 일정 범위 만큼 push */
+    schedules.forEach(sch => {
+      const cur = new Date(sch.startDate);
+      const end = new Date(sch.endDate);
+      while (cur <= end) {
+        const key = cur.toISOString().split('T')[0];
+        if (!items[key]) items[key] = [];
+        items[key].push({...sch, height: 80});
+        cur.setDate(cur.getDate() + 1);
       }
-      items[schedule.date].push({
-        ...schedule,
-        height: 80
-      });
     });
-
     return items;
   }, [schedules]);
+
 
   return {
     schedules,

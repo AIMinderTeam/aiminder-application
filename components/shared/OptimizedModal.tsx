@@ -17,9 +17,11 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
                                                                            editingSchedule,
                                                                          }) => {
   const [formData, setFormData] = React.useState({
+    startDate: '',
+    endDate: '',
     title: '',
     time: '',
-    description: ''
+    description: '',
   });
 
   // 입력 값 변경을 위한 메모이제이션된 핸들러
@@ -31,12 +33,20 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
   React.useEffect(() => {
     if (editingSchedule) {
       setFormData({
+        startDate: editingSchedule.startDate,
+        endDate: editingSchedule.endDate,
         title: editingSchedule.title,
         time: editingSchedule.time,
-        description: editingSchedule.description
+        description: editingSchedule.description,
       });
     } else {
-      setFormData({title: '', time: '', description: ''});
+      setFormData({
+        startDate: '',
+        endDate: '',
+        title: '',
+        time: '',
+        description: '',
+      });
     }
   }, [editingSchedule]);
 
@@ -67,10 +77,18 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
           />
 
           <TextInput
-            label="시간"
-            value={formData.time}
-            onChangeText={handleChange('time')}
-            placeholder="HH:MM"
+            label="시작 날짜 (YYYY-MM-DD)"
+            value={formData.startDate}
+            onChangeText={handleChange('startDate')}
+            style={styles.input}
+            mode="outlined"
+            dense
+          />
+
+          <TextInput
+            label="끝 날짜 (YYYY-MM-DD)"
+            value={formData.endDate}
+            onChangeText={handleChange('endDate')}
             style={styles.input}
             mode="outlined"
             dense

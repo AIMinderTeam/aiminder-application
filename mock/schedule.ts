@@ -3,64 +3,97 @@ export const scheduleMockData = [
   {
     id: '1',
     title: '팀 미팅',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-05',
     time: '10:00',
     description: '프로젝트 진행 상황 공유'
   },
   {
     id: '2',
     title: '점심 약속',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-03',
     time: '12:30',
     description: '팀원들과 맛집 탐방'
   },
   {
     id: '3',
     title: '코드 리뷰',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-03',
     time: '14:00',
     description: '신규 기능 코드 리뷰'
   },
   {
     id: '4',
     title: '회식',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-04',
     time: '18:00',
     description: '팀 회식'
   },
   {
     id: '5',
     title: '야근',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-03',
     time: '20:00',
     description: '마감 업무 처리'
   },
   {
     id: '6',
     title: '오늘은 정말 바쁜 하루네요',
-    date: '2025-06-03',
+    startDate: '2025-06-03',
+    endDate: '2025-06-03',
     time: '22:00',
     description: '퇴근 후 정리'
   },
   {
     id: '7',
     title: '병원 예약',
-    date: '2025-06-05',
+    startDate: '2025-06-05',
+    endDate: '2025-06-05',
     time: '14:00',
     description: '정기 건강 검진'
   },
   {
     id: '8',
     title: '운동',
-    date: '2025-06-07',
+    startDate: '2025-06-07',
+    endDate: '2025-06-07',
     time: '18:00',
     description: '헬스장 PT 세션'
   },
   {
     id: '9',
     title: '가족 모임',
-    date: '2025-06-09',
+    startDate: '2025-06-09',
+    endDate: '2025-06-09',
     time: '19:00',
     description: '부모님 댁 저녁 식사'
+  },
+  {
+    id: '10',
+    title: '스프링 세미나',
+    startDate: '2025-05-15',
+    endDate: '2025-05-15',
+    time: '13:00',
+    description: '스프링 프레임워크 세미나 참석'
+  },
+  {
+    id: '11',
+    title: '디자인 미팅',
+    startDate: '2025-05-20',
+    endDate: '2025-05-20',
+    time: '15:00',
+    description: 'UI/UX 디자인 검토'
+  },
+  {
+    id: '12',
+    title: '워크샵',
+    startDate: '2025-05-25',
+    endDate: '2025-05-27',
+    time: '09:00',
+    description: '팀 빌딩 워크샵'
   }
 ];
