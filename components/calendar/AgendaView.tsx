@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Schedule, AgendaItem} from '@/domain/schedule';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {AgendaItem, Schedule} from '@/domain/schedule';
 import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
@@ -33,6 +33,50 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     []
   );
   const currentSelected = selected || today;
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(true);
+  const handleCalendarToggle = React.useCallback(
+    (opened: boolean) => {
+      setIsCalendarOpen(opened);
+    },
+    [setIsCalendarOpen],
+  );
+
+  const getWeekRange = React.useCallback((dateStr: string) => {
+    const date = new Date(dateStr);
+    const day = date.getDay();
+    const start = new Date(date);
+    start.setDate(date.getDate() - day);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    const toISO = (d: Date) => d.toISOString().split('T')[0];
+
+    return {start: toISO(start), end: toISO(end)};
+  }, []);
+
+  const displayedItems = React.useMemo(() => {
+    if (isCalendarOpen) {
+      return items;
+    }
+
+    const { start, end } = getWeekRange(currentSelected);
+    const filtered: { [key: string]: AgendaItem[] } = {};
+
+    Object.entries(items).forEach(([key, value]) => {
+      if (key >= start && key <= end) {
+        filtered[key] = value;
+      }
+    });
+
+    const cursor = new Date(start);
+    while (cursor.toISOString().split('T')[0] <= end) {
+      const k = cursor.toISOString().split('T')[0];
+      if (!filtered[k]) filtered[k] = [];
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return filtered;
+  }, [items, isCalendarOpen, getWeekRange]);
+
   const agendaRef = React.useRef<any>(null);
   const handleDayPress = React.useCallback(
     (day: { dateString: string }) => {
@@ -46,7 +90,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   const DayComponent = React.useCallback(
     ({ date, state }: { date: { dateString: string; day: number }; state: string }) => {
     const dateKey = date?.dateString ?? '';
-    const schedules = items[dateKey] ?? [];
+    const schedules = displayedItems[dateKey] ?? [];
     const hasSchedules = schedules.length > 0;
       const handlePress = () => {
         if (dateKey) {
@@ -93,13 +137,14 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       </TouchableOpacity>
     );
   },
-  [items, handleDayPress]
+  [handleDayPress, displayedItems]
 );
 
   return (
     <Agenda
       ref={agendaRef}
-      items={items}
+      items={displayedItems}
+      onCalendarToggled={handleCalendarToggle}
       selected={currentSelected}
       onDayPress={handleDayPress}
       renderItem={(item: AgendaItem) => (
@@ -129,7 +174,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'stretch',
     justifyContent: 'flex-start',
-    paddingVertical: 4,
+    paddingVertical: 8,
   },
 
   dayNumber: {
