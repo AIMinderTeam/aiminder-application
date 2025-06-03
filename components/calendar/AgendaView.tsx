@@ -1,12 +1,6 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated          // ← 추가
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';  // ← 추가
 import {Schedule, AgendaItem} from '@/domain/schedule';
 import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
@@ -34,8 +28,6 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onEditSchedule,
   onDeleteSchedule
 }) => {
-  const calendarOpenAnim = React.useRef(new Animated.Value(0)).current;
-
   const DayComponent = React.useCallback(
     ({date, state}: {date: {dateString: string; day: number}; state: string}) => {
       const dateKey = date?.dateString ?? '';
@@ -48,19 +40,9 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         }
       };
 
-      const animatedStyle = React.useMemo(
-        () => ({
-          paddingVertical: calendarOpenAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [4, 12]
-          })
-        }),
-        [calendarOpenAnim]
-      );
-
       return (
         <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
-          <Animated.View style={[styles.dayContainer, animatedStyle]}>
+          <View style={styles.dayContainer}>
             <Text
               style={[
                 styles.dayNumber,
@@ -80,11 +62,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
                 </Text>
               </View>
             )}
-          </Animated.View>
+          </View>
         </TouchableOpacity>
       );
     },
-    [items, selected, onDayPress, calendarOpenAnim]
+    [items, selected, onDayPress]
   );
 
   return (
@@ -103,14 +85,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       dayComponent={DayComponent}
       theme={theme}
       showClosingKnob
-      hideExtraDays={false}
-      onCalendarToggled={(opened: boolean) =>
-        Animated.timing(calendarOpenAnim, {
-          toValue: opened ? 1 : 0,
-          duration: 0,
-          useNativeDriver: false
-        }).start()
-      }
+      hideExtraDays
     />
   );
 });
@@ -119,6 +94,7 @@ const styles = StyleSheet.create({
   dayContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 4
   },
   dayNumber: {
     fontSize: 14,
@@ -140,6 +116,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   scheduleText: {
+    marginTop: 2,
     fontSize: 10,
     color: '#4395E6'
   }
