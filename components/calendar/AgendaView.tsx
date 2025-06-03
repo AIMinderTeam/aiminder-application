@@ -34,14 +34,8 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onEditSchedule,
   onDeleteSchedule
 }) => {
-  /* -------------------------------------------------
-   * 1. 캘린더가 열리고 닫힐 때 사용할 애니메이션 값
-   * -------------------------------------------------*/
   const calendarOpenAnim = React.useRef(new Animated.Value(0)).current;
 
-  /* -------------------------------------------------
-   * 2. 날짜 셀 컴포넌트
-   * -------------------------------------------------*/
   const DayComponent = React.useCallback(
     ({date, state}: {date: {dateString: string; day: number}; state: string}) => {
       const dateKey = date?.dateString ?? '';
@@ -54,12 +48,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         }
       };
 
-      /* 셀이 펼쳐짐/접힘 상태에 따라 padding 을 보간 */
       const animatedStyle = React.useMemo(
         () => ({
           paddingVertical: calendarOpenAnim.interpolate({
-            inputRange: [0, 1],          // 0: 접힘, 1: 펼쳐짐
-            outputRange: [4, 12]         // 원하는 패딩 값
+            inputRange: [0, 1],
+            outputRange: [4, 12]
           })
         }),
         [calendarOpenAnim]
@@ -67,7 +60,6 @@ export const AgendaView = React.memo<AgendaViewProps>(({
 
       return (
         <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
-          {/* Animated.View 로 감싸서 패딩 애니메이션 적용 */}
           <Animated.View style={[styles.dayContainer, animatedStyle]}>
             <Text
               style={[
@@ -93,10 +85,6 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     [items, selected, onDayPress, calendarOpenAnim]
   );
 
-  /* -------------------------------------------------
-   * 3. Agenda 컴포넌트
-   *    onCalendarToggled 콜백으로 열림/닫힘 감지
-   * -------------------------------------------------*/
   return (
     <Agenda
       items={items}
@@ -114,12 +102,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       theme={theme}
       showClosingKnob
       hideExtraDays={false}
-      /* 캘린더 토글 시 애니메이션 트리거 */
       onCalendarToggled={(opened: boolean) =>
         Animated.timing(calendarOpenAnim, {
           toValue: opened ? 1 : 0,
           duration: 0,
-          useNativeDriver: false   // height/padding 은 레이아웃 프로퍼티이므로 false
+          useNativeDriver: false
         }).start()
       }
     />
