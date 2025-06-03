@@ -71,12 +71,14 @@ export const AgendaView = React.memo<AgendaViewProps>(({
             </Text>
 
             {hasSchedules && (
-              <Text
-                style={styles.scheduleText}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {schedules[0].title}
-              </Text>
+              <View style={styles.scheduleBox}>
+                <Text
+                  style={styles.scheduleText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {schedules[0].title}
+                </Text>
+              </View>
             )}
           </Animated.View>
         </TouchableOpacity>
@@ -129,8 +131,15 @@ const styles = StyleSheet.create({
     color: '#4395E6',
     fontWeight: 'bold'
   },
-  scheduleText: {
+  scheduleBox: {
     marginTop: 2,
+    backgroundColor: '#E8F4FF',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 4,
+    maxWidth: '100%',
+  },
+  scheduleText: {
     fontSize: 10,
     color: '#4395E6'
   }
