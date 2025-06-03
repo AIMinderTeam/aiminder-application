@@ -8,7 +8,8 @@ export const useSchedules = () => {
   const [selectedDate, setSelectedDate] = React.useState('');
   const [visible, setVisible] = React.useState(false);
   const [editingSchedule, setEditingSchedule] = React.useState<Schedule | null>(null);
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = React.useState<Schedule>({
+    id: '',
     title: '',
     time: '',
     description: '',
@@ -22,6 +23,7 @@ export const useSchedules = () => {
     setVisible(false);
     setEditingSchedule(null);
     setFormData({
+      id: '',
       title: '',
       time: '',
       description: '',
@@ -44,6 +46,7 @@ export const useSchedules = () => {
   const handleEditSchedule = React.useCallback((schedule: Schedule) => {
     setEditingSchedule(schedule);
     setFormData({
+      id: schedule.id,
       title: schedule.title,
       time: schedule.time,
       description: schedule.description,

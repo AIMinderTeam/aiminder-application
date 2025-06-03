@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';
 import {AgendaView} from '@/components/calendar/AgendaView';
-import {OptimizedModal} from '@/components/shared/OptimizedModal';
+import {ScheduleFormModal} from '@/components/calendar/ScheduleFormModal';
 import {useSchedules} from "@/hooks/calendar/useSchedule";
 import {initializeLocale} from "@/hooks/calendar/useLocale";
 
@@ -14,8 +14,8 @@ export default function CalendarScreen() {
     visible,
     editingSchedule,
     formData,
-    setSelectedDate,
     setFormData,
+    setSelectedDate,
     showModal,
     hideModal,
     handleSaveSchedule,
@@ -40,11 +40,13 @@ export default function CalendarScreen() {
         onDeleteSchedule={handleDeleteSchedule}
       />
 
-      <OptimizedModal
+      <ScheduleFormModal
         visible={visible}
         onDismiss={hideModal}
         onSave={handleSaveSchedule}
         editingSchedule={editingSchedule}
+        formData={formData}
+        setFormData={setFormData}
       />
 
       <FAB

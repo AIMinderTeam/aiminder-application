@@ -3,34 +3,27 @@ import {Modal as RNModal, StyleSheet, View} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 
-interface OptimizedModalProps {
+interface ScheduleFormModalProps {
   visible: boolean;
   onDismiss: () => void;
   onSave: (data: { title: string; time: string; description: string }) => void;
   editingSchedule: Schedule | null;
+  formData: Schedule;
+  setFormData: (data: Schedule) => void;
 }
 
-export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
-                                                                           visible,
-                                                                           onDismiss,
-                                                                           onSave,
-                                                                           editingSchedule,
-                                                                         }) => {
-  const [formData, setFormData] = React.useState({
-    startDate: '',
-    endDate: '',
-    title: '',
-    time: '',
-    description: '',
-  });
-
-  const handleChange = React.useCallback((field: string) => (
-    (text: string) => setFormData(prev => ({...prev, [field]: text}))
-  ), [setFormData]);
-
+export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
+                                                                                 visible,
+                                                                                 onDismiss,
+                                                                                 onSave,
+                                                                                 editingSchedule,
+                                                                                 formData,
+                                                                                 setFormData
+                                                                               }) => {
   React.useEffect(() => {
     if (editingSchedule) {
       setFormData({
+        id: editingSchedule.id,
         startDate: editingSchedule.startDate,
         endDate: editingSchedule.endDate,
         title: editingSchedule.title,
@@ -39,6 +32,7 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
       });
     } else {
       setFormData({
+        id: '',
         startDate: '',
         endDate: '',
         title: '',
@@ -48,9 +42,19 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
     }
   }, [editingSchedule]);
 
+  const handleChange = (name: keyof Schedule, value: string) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+
   const handleSave = React.useCallback(() => {
     onSave(formData);
-  }, [formData, onSave]);
+    onDismiss();
+  }, [formData, onSave, onDismiss]);
+
 
   return (
     <RNModal
@@ -68,7 +72,7 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
           <TextInput
             label="제목"
             value={formData.title}
-            onChangeText={handleChange('title')}
+            onChangeText={(text: string) => handleChange('title', text)}
             style={styles.input}
             mode="outlined"
             dense
@@ -77,7 +81,7 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
           <TextInput
             label="시작 날짜 (YYYY-MM-DD)"
             value={formData.startDate}
-            onChangeText={handleChange('startDate')}
+            onChangeText={(text: string) => handleChange('startDate', text)}
             style={styles.input}
             mode="outlined"
             dense
@@ -86,7 +90,7 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
           <TextInput
             label="끝 날짜 (YYYY-MM-DD)"
             value={formData.endDate}
-            onChangeText={handleChange('endDate')}
+            onChangeText={(text: string) => handleChange('endDate', text)}
             style={styles.input}
             mode="outlined"
             dense
@@ -95,7 +99,7 @@ export const OptimizedModal: React.FC<OptimizedModalProps> = React.memo(({
           <TextInput
             label="설명"
             value={formData.description}
-            onChangeText={handleChange('description')}
+            onChangeText={(text: string) => handleChange('description', text)}
             multiline
             numberOfLines={3}
             style={styles.input}
@@ -146,5 +150,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 8
   }
 });
-
-export default OptimizedModal;
