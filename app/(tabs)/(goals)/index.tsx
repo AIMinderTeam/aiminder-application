@@ -28,7 +28,7 @@ export default function GoalsScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header>
-        <Appbar.Content title="목표 관리" />
+        <Appbar.Content title="AI비서" />
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
 

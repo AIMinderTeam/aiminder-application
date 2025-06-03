@@ -33,10 +33,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(goals)/index"
         options={{
-          title: "목표관리",
-          tabBarLabel: "목표관리",
+          title: "AI비서",
+          tabBarLabel: "AI비서",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <MaterialCommunityIcons name="checkbox-marked-outline" size={size} color={color} />
+            <MaterialCommunityIcons name="robot-outline" size={size} color={color} />
           ),
         }}
       />
