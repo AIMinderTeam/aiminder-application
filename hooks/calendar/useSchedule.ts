@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {AgendaItem, Schedule} from '@/domain/Schedule';
-import {scheduleMockData} from "@/mock/ScheduleMockData";
+import {useScheduleStore} from '@/stores/ScheduleStore';
 
 export const useSchedules = () => {
-  const [schedules, setSchedules] = React.useState<Schedule[]>(scheduleMockData);
+  const {schedules, createSchedule, updateSchedule, deleteSchedule} = useScheduleStore();
+  
   const [selectedDate, setSelectedDate] = React.useState('');
   const [visible, setVisible] = React.useState(false);
   const [editingSchedule, setEditingSchedule] = React.useState<Schedule | null>(null);
@@ -14,7 +15,6 @@ export const useSchedules = () => {
     startDate: '',
     endDate: '',
   });
-
 
   const showModal = React.useCallback(() => setVisible(true), []);
 
@@ -34,22 +34,12 @@ export const useSchedules = () => {
     if (!selectedDate || !formData.title) return;
 
     if (editingSchedule) {
-      setSchedules(prevSchedules =>
-        prevSchedules.map(schedule =>
-          schedule.id === editingSchedule.id
-            ? {...schedule, ...formData}
-            : schedule
-        )
-      );
+      updateSchedule(editingSchedule.id, formData);
     } else {
-      const newSchedule: Schedule = {
-        id: Date.now().toString(),
-        ...formData
-      };
-      setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
+      createSchedule(formData);
     }
     hideModal();
-  }, [selectedDate, formData, editingSchedule]);
+  }, [selectedDate, formData, editingSchedule, createSchedule, updateSchedule]);
 
   const handleEditSchedule = React.useCallback((schedule: Schedule) => {
     setEditingSchedule(schedule);
@@ -64,15 +54,12 @@ export const useSchedules = () => {
   }, []);
 
   const handleDeleteSchedule = React.useCallback((id: string) => {
-    setSchedules(prevSchedules =>
-      prevSchedules.filter(schedule => schedule.id !== id)
-    );
-  }, []);
+    deleteSchedule(id);
+  }, [deleteSchedule]);
 
   const getAgendaItems = React.useCallback(() => {
     const items: {[key: string]: AgendaItem[]} = {};
 
-    /* 이번 달 모든 날짜 미리 생성 */
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -80,7 +67,6 @@ export const useSchedules = () => {
       items[d.toISOString().split('T')[0]] = [];
     }
 
-    /* 일정 범위 만큼 push */
     schedules.forEach(sch => {
       const cur = new Date(sch.startDate);
       const end = new Date(sch.endDate);
@@ -93,7 +79,6 @@ export const useSchedules = () => {
     });
     return items;
   }, [schedules]);
-
 
   return {
     schedules,
