@@ -5,6 +5,8 @@ import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
 import {DayView} from "@/components/calendar/DayView";
+import {View} from "react-native";
+import {DayHeader} from "@/components/calendar/DayHeader";
 
 interface AgendaViewProps {
   items: { [key: string]: AgendaItem[] };
@@ -87,7 +89,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     },
     [onDayPress, agendaRef.current]
   );
-  /** react-native-calendars 에 전달될 Day Cell 컴포넌트 */
+
   const renderDayComponent = React.useCallback(
     ({date, state}: { date: { dateString: string; day: number }; state: string }) => {
       const dateKey = date?.dateString ?? '';
@@ -106,6 +108,24 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     [displayedItems, handleDayPress],
   );
 
+  const renderItem = React.useCallback(
+    (item: AgendaItem, firstItemInDay: boolean) => {
+      return (
+        <View>
+          {firstItemInDay && (
+            <DayHeader />
+          )}
+          <ScheduleCard
+            schedule={item}
+            onEdit={onEditSchedule}
+            onDelete={onDeleteSchedule}
+          />
+        </View>
+      );
+    },
+    [onEditSchedule, onDeleteSchedule],
+  );
+
   return (
     <Agenda
       ref={agendaRef}
@@ -113,14 +133,15 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       onCalendarToggled={handleCalendarToggle}
       selected={currentSelected}
       onDayPress={handleDayPress}
-      renderItem={(item: AgendaItem) => (
-        <ScheduleCard
-          schedule={item}
-          onEdit={onEditSchedule}
-          onDelete={onDeleteSchedule}
-        />
+      renderItem={(item: AgendaItem, firstItemInDay: boolean) =>
+        renderItem(item, firstItemInDay)
+      }
+      renderEmptyDate={() => (
+        <View>
+          <DayHeader />
+          <EmptySchedule />
+        </View>
       )}
-      renderEmptyDate={() => <EmptySchedule/>}
       dayComponent={renderDayComponent}
       theme={theme}
       showClosingKnob

@@ -11,7 +11,6 @@ export const EmptySchedule = React.memo(() => (
 const styles = StyleSheet.create({
   container: {
     height: 15,
-    flex: 1,
-    paddingTop: 30
+    marginLeft: 20
   }
 });
