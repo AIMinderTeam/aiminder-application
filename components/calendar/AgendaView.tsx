@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';  // ← 추가
 import {Schedule, AgendaItem} from '@/domain/schedule';
 import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
@@ -34,29 +34,37 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       const schedules = items[dateKey] ?? [];
       const hasSchedules = schedules.length > 0;
 
-      return (
-        <View style={styles.dayContainer}>
-          <Text
-            style={[
-              styles.dayNumber,
-              state === 'disabled' && styles.disabledDayNumber,
-              dateKey === selected && styles.selectedDayNumber
-            ]}>
-            {date.day}
-          </Text>
+      const handlePress = () => {
+        if (dateKey) {
+          onDayPress({dateString: dateKey});
+        }
+      };
 
-          {hasSchedules && (
+      return (
+        <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+          <View style={styles.dayContainer}>
             <Text
-              style={styles.scheduleText}
-              numberOfLines={1}              // 한 줄만 표기, 길면 말줄임표
-              ellipsizeMode="tail">
-              {schedules[0].title}
+              style={[
+                styles.dayNumber,
+                state === 'disabled' && styles.disabledDayNumber,
+                dateKey === selected && styles.selectedDayNumber
+              ]}>
+              {date.day}
             </Text>
-          )}
-        </View>
+
+            {hasSchedules && (
+              <Text
+                style={styles.scheduleText}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {schedules[0].title}
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
       );
     },
-    [items, selected]
+    [items, selected, onDayPress]
   );
 
   return (
@@ -72,10 +80,10 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         />
       )}
       renderEmptyDate={() => <EmptySchedule />}
-      dayComponent={DayComponent}   // ← 커스텀 날짜 셀 지정
+      dayComponent={DayComponent}
       theme={theme}
-      showClosingKnob={true}
-      hideExtraDays={true}
+      showClosingKnob
+      hideExtraDays
     />
   );
 });
