@@ -41,7 +41,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     };
 
     return (
-      <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={handlePress}
+        activeOpacity={0.7}
+        style={styles.dayTouchable}
+      >
         <View style={styles.dayContainer}>
           <Text
             style={[
@@ -100,33 +104,44 @@ export const AgendaView = React.memo<AgendaViewProps>(({
 });
 
 const styles = StyleSheet.create({
-  dayContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 4
+  dayTouchable: {
+    flex: 1,
+    width: '100%',
   },
+
+  dayContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+    paddingVertical: 4,
+  },
+
   dayNumber: {
     fontSize: 14,
-    color: '#000'
+    color: '#000',
+    textAlign: 'center',
   },
+
   disabledDayNumber: {
-    color: '#c1c1c1'
+    color: '#c1c1c1',
   },
   selectedDayNumber: {
     color: '#4395E6',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
+
   scheduleBox: {
     marginTop: 2,
     backgroundColor: '#E8F4FF',
     paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 4,
-    maxWidth: '100%',
+    alignSelf: 'stretch',
   },
+
   scheduleText: {
-    marginTop: 2,
     fontSize: 10,
-    color: '#4395E6'
-  }
+    color: '#4395E6',
+  },
 });
