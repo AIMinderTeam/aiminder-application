@@ -28,11 +28,6 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onEditSchedule,
   onDeleteSchedule
 }) => {
-  /* ------------------------------------------------------------------
-   * 날짜 셀(dayComponent) 커스터마이즈
-   * 1. 전체 날짜 셀에 일(day) 숫자를 표시
-   * 2. 해당 날짜에 일정이 존재하면 첫 번째 일정의 이름을 함께 출력
-   * ------------------------------------------------------------------ */
   const DayComponent = React.useCallback(
     ({date, state}: {date: {dateString: string; day: number}; state: string}) => {
       const dateKey = date?.dateString ?? '';

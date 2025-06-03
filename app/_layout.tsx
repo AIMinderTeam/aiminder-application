@@ -9,7 +9,6 @@ const theme = {
   },
 };
 
-
 export default function RootLayout() {
   return (
     <PaperProvider theme={theme}>

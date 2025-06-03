@@ -4,11 +4,11 @@ import {View, StyleSheet} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';
 import {AgendaView} from '@/components/calendar/AgendaView';
 import {OptimizedModal} from '@/components/shared/OptimizedModal';
-import {useLocale} from '@/hooks/calendar/useLocale';
 import {useSchedules} from "@/hooks/calendar/useSchedule";
+import {initializeLocale} from "@/hooks/calendar/useLocale";
 
 export default function CalendarScreen() {
-  useLocale();
+  initializeLocale()
 
   const {
     selectedDate,
