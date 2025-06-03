@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Modal as RNModal, StyleSheet, View} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
-import {Schedule} from "@/domain/schedule";
+import {Schedule} from "@/domain/Schedule";
 
 interface OptimizedModalProps {
   visible: boolean;

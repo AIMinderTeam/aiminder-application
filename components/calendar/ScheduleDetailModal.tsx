@@ -8,7 +8,7 @@ import {
   useTheme,
   Divider,
 } from 'react-native-paper';
-import {Schedule} from '@/domain/schedule';
+import {Schedule} from '@/domain/Schedule';
 
 interface ScheduleDetailModalProps {
   visible: boolean;

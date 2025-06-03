@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { AgendaItem } from '@/domain/schedule';
+import { AgendaItem } from '@/domain/Schedule';
 
 interface DayComponentProps {
   /** react-native-calendars 가 넘겨주는 날짜 객체 */

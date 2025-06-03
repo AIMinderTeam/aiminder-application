@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text, useTheme} from 'react-native-paper';
-import {Schedule} from '@/domain/schedule';
+import {Schedule} from '@/domain/Schedule';
 
 const formatTime = (date: Date | string) => {
   const d = typeof date === 'string' ? new Date(date) : date;

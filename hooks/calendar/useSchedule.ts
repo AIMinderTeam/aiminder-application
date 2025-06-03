@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {AgendaItem, Schedule} from '@/domain/schedule';
-import {scheduleMockData} from "@/mock/schedule";
+import {AgendaItem, Schedule} from '@/domain/Schedule';
+import {scheduleMockData} from "@/mock/ScheduleMockData";
 
 export const useSchedules = () => {
   const [schedules, setSchedules] = React.useState<Schedule[]>(scheduleMockData);
