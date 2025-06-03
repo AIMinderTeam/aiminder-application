@@ -7,6 +7,7 @@ import {EmptySchedule} from './EmptySchedule';
 import {DayView} from "@/components/calendar/DayView";
 import {View} from "react-native";
 import {DayHeader} from "@/components/calendar/DayHeader";
+import {ScheduleDetailModal} from './ScheduleDetailModal';
 
 interface AgendaViewProps {
   items: { [key: string]: AgendaItem[] };
@@ -24,12 +25,22 @@ const theme: CalendarTheme = {
 };
 
 export const AgendaView = React.memo<AgendaViewProps>(({
-                                                         items,
-                                                         selected,
-                                                         onDayPress,
-                                                         onEditSchedule,
-                                                         onDeleteSchedule
-                                                       }) => {
+  items,
+  selected,
+  onDayPress,
+  onEditSchedule,
+  onDeleteSchedule
+}) => {
+  const [selectedSchedule, setSelectedSchedule] = React.useState<Schedule | null>(null);
+  
+  const handleSchedulePress = React.useCallback((schedule: Schedule) => {
+    setSelectedSchedule(schedule);
+  }, []);
+
+  const handleCloseDetail = React.useCallback(() => {
+    setSelectedSchedule(null);
+  }, []);
+
   const today = React.useMemo(
     () => new Date().toISOString().split('T')[0],
     []
@@ -112,40 +123,46 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     (item: AgendaItem, firstItemInDay: boolean) => {
       return (
         <View>
-          {firstItemInDay && (
-            <DayHeader />
-          )}
+          {firstItemInDay && <DayHeader />}
           <ScheduleCard
             schedule={item}
-            onEdit={onEditSchedule}
-            onDelete={onDeleteSchedule}
+            onPress={handleSchedulePress}
           />
         </View>
       );
     },
-    [onEditSchedule, onDeleteSchedule],
+    [handleSchedulePress],
   );
 
   return (
-    <Agenda
-      ref={agendaRef}
-      items={displayedItems}
-      onCalendarToggled={handleCalendarToggle}
-      selected={currentSelected}
-      onDayPress={handleDayPress}
-      renderItem={(item: AgendaItem, firstItemInDay: boolean) =>
-        renderItem(item, firstItemInDay)
-      }
-      renderEmptyDate={() => (
-        <View>
-          <DayHeader />
-          <EmptySchedule />
-        </View>
-      )}
-      dayComponent={renderDayComponent}
-      theme={theme}
-      showClosingKnob
-      hideExtraDays
-    />
+    <>
+      <Agenda
+        ref={agendaRef}
+        items={displayedItems}
+        onCalendarToggled={handleCalendarToggle}
+        selected={currentSelected}
+        onDayPress={handleDayPress}
+        renderItem={(item: AgendaItem, firstItemInDay: boolean) =>
+          renderItem(item, firstItemInDay)
+        }
+        renderEmptyDate={() => (
+          <View>
+            <DayHeader />
+            <EmptySchedule />
+          </View>
+        )}
+        dayComponent={renderDayComponent}
+        theme={theme}
+        showClosingKnob
+        hideExtraDays
+      />
+      <ScheduleDetailModal
+        visible={!!selectedSchedule}
+        schedule={selectedSchedule}
+        onDismiss={handleCloseDetail}
+        onEdit={onEditSchedule}
+        onDelete={onDeleteSchedule}
+      />
+    </>
   );
 });
