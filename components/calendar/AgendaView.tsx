@@ -29,45 +29,54 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onDeleteSchedule
 }) => {
   const DayComponent = React.useCallback(
-    ({date, state}: {date: {dateString: string; day: number}; state: string}) => {
-      const dateKey = date?.dateString ?? '';
-      const schedules = items[dateKey] ?? [];
-      const hasSchedules = schedules.length > 0;
+    ({ date, state }: { date: { dateString: string; day: number }; state: string }) => {
+    const dateKey = date?.dateString ?? '';
+    const schedules = items[dateKey] ?? [];
+    const hasSchedules = schedules.length > 0;
 
-      const handlePress = () => {
-        if (dateKey) {
-          onDayPress({dateString: dateKey});
-        }
-      };
+    const handlePress = () => {
+      if (dateKey) {
+        onDayPress({ dateString: dateKey });
+      }
+    };
 
-      return (
-        <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
-          <View style={styles.dayContainer}>
-            <Text
-              style={[
-                styles.dayNumber,
-                state === 'disabled' && styles.disabledDayNumber,
-                dateKey === selected && styles.selectedDayNumber
-              ]}>
-              {date.day}
-            </Text>
+    return (
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+        <View style={styles.dayContainer}>
+          <Text
+            style={[
+              styles.dayNumber,
+              state === 'disabled' && styles.disabledDayNumber,
+              dateKey === selected && styles.selectedDayNumber
+            ]}
+          >
+            {date.day}
+          </Text>
 
-            {hasSchedules && (
-              <View style={styles.scheduleBox}>
+          {hasSchedules &&
+            schedules.map((schedule, idx) => (
+              <View
+                key={idx}
+                style={[
+                  styles.scheduleBox,
+                  idx === 1 && { marginTop: 1 }
+                ]}
+              >
                 <Text
                   style={styles.scheduleText}
                   numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {schedules[0].title}
+                  ellipsizeMode="tail"
+                >
+                  {schedule.title}
                 </Text>
               </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      );
-    },
-    [items, selected, onDayPress]
-  );
+            ))}
+        </View>
+      </TouchableOpacity>
+    );
+  },
+  [items, selected, onDayPress]
+);
 
   return (
     <Agenda
