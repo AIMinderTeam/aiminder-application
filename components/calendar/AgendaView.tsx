@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {AgendaItem, Schedule} from '@/domain/schedule';
 import {CalendarTheme} from '@/domain/theme';
 import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
+import {DayView} from "@/components/calendar/DayView";
 
 interface AgendaViewProps {
   items: { [key: string]: AgendaItem[] };
@@ -22,12 +22,12 @@ const theme: CalendarTheme = {
 };
 
 export const AgendaView = React.memo<AgendaViewProps>(({
-  items,
-  selected,
-  onDayPress,
-  onEditSchedule,
-  onDeleteSchedule
-}) => {
+                                                         items,
+                                                         selected,
+                                                         onDayPress,
+                                                         onEditSchedule,
+                                                         onDeleteSchedule
+                                                       }) => {
   const today = React.useMemo(
     () => new Date().toISOString().split('T')[0],
     []
@@ -59,7 +59,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       return items;
     }
 
-    const { start, end } = getWeekRange(currentSelected);
+    const {start, end} = getWeekRange(currentSelected);
     const filtered: { [key: string]: AgendaItem[] } = {};
 
     Object.entries(items).forEach(([key, value]) => {
@@ -87,58 +87,24 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     },
     [onDayPress, agendaRef.current]
   );
-  const DayComponent = React.useCallback(
-    ({ date, state }: { date: { dateString: string; day: number }; state: string }) => {
-    const dateKey = date?.dateString ?? '';
-    const schedules = displayedItems[dateKey] ?? [];
-    const hasSchedules = schedules.length > 0;
-      const handlePress = () => {
-        if (dateKey) {
-          handleDayPress({ dateString: dateKey });
-        }
-      };
+  /** react-native-calendars 에 전달될 Day Cell 컴포넌트 */
+  const renderDayComponent = React.useCallback(
+    ({date, state}: { date: { dateString: string; day: number }; state: string }) => {
+      const dateKey = date?.dateString ?? '';
+      const schedules = displayedItems[dateKey] ?? [];
 
-    return (
-      <TouchableOpacity
-        onPress={handlePress}
-        activeOpacity={0.7}
-        style={styles.dayTouchable}
-      >
-        <View style={styles.dayContainer}>
-          <Text
-            style={[
-              styles.dayNumber,
-              state === 'disabled' && styles.disabledDayNumber,
-              dateKey === currentSelected && styles.selectedDayNumber
-            ]}
-          >
-            {date.day}
-          </Text>
-
-          {hasSchedules &&
-            schedules.map((schedule, idx) => (
-              <View
-                key={idx}
-                style={[
-                  styles.scheduleBox,
-                  idx === 1 && { marginTop: 1 }
-                ]}
-              >
-                <Text
-                  style={styles.scheduleText}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {schedule.title}
-                </Text>
-              </View>
-            ))}
-        </View>
-      </TouchableOpacity>
-    );
-  },
-  [handleDayPress, displayedItems]
-);
+      return (
+        <DayView
+          date={date}
+          state={state}
+          schedules={schedules}
+          currentSelected={currentSelected}
+          onPress={(d) => handleDayPress({dateString: d})}
+        />
+      );
+    },
+    [displayedItems, handleDayPress],
+  );
 
   return (
     <Agenda
@@ -154,54 +120,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
           onDelete={onDeleteSchedule}
         />
       )}
-      renderEmptyDate={() => <EmptySchedule />}
-      dayComponent={DayComponent}
+      renderEmptyDate={() => <EmptySchedule/>}
+      dayComponent={renderDayComponent}
       theme={theme}
       showClosingKnob
       hideExtraDays
     />
   );
-});
-
-const styles = StyleSheet.create({
-  dayTouchable: {
-    flex: 1,
-    width: '100%',
-  },
-
-  dayContainer: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-    paddingVertical: 8,
-  },
-
-  dayNumber: {
-    fontSize: 14,
-    color: '#000',
-    textAlign: 'center',
-  },
-
-  disabledDayNumber: {
-    color: '#c1c1c1',
-  },
-  selectedDayNumber: {
-    color: '#4395E6',
-    fontWeight: 'bold',
-  },
-
-  scheduleBox: {
-    marginTop: 2,
-    backgroundColor: '#E8F4FF',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 4,
-    alignSelf: 'stretch',
-  },
-
-  scheduleText: {
-    fontSize: 10,
-    color: '#4395E6',
-  },
 });
