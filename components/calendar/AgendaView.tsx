@@ -8,7 +8,7 @@ import {EmptySchedule} from './EmptySchedule';
 
 interface AgendaViewProps {
   items: { [key: string]: AgendaItem[] };
-  selected: string;
+  selected?: string;
   onDayPress: (day: { dateString: string }) => void;
   onEditSchedule: (schedule: Schedule) => void;
   onDeleteSchedule: (id: string) => void;
@@ -28,6 +28,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   onEditSchedule,
   onDeleteSchedule
 }) => {
+  const today = React.useMemo(
+    () => new Date().toISOString().split('T')[0],
+    []
+  );
+  const currentSelected = selected || today;
   const agendaRef = React.useRef<any>(null);
   const handleDayPress = React.useCallback(
     (day: { dateString: string }) => {
@@ -60,7 +65,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
             style={[
               styles.dayNumber,
               state === 'disabled' && styles.disabledDayNumber,
-              dateKey === selected && styles.selectedDayNumber
+              dateKey === currentSelected && styles.selectedDayNumber
             ]}
           >
             {date.day}
@@ -88,14 +93,14 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       </TouchableOpacity>
     );
   },
-  [items, selected, handleDayPress]
+  [items, handleDayPress]
 );
 
   return (
     <Agenda
       ref={agendaRef}
       items={items}
-      selected={selected}
+      selected={currentSelected}
       onDayPress={handleDayPress}
       renderItem={(item: AgendaItem) => (
         <ScheduleCard
