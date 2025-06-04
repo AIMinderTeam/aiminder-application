@@ -310,24 +310,24 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // 배경 투명도 증가
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 16
+    paddingHorizontal: 20
   },
   modalContent: {
-    padding: 24,
-    borderRadius: 16,
+    padding: 28,
+    borderRadius: 20,
     width: '100%',
-    maxWidth: 500,
-    elevation: 5,
+    maxWidth: 520,
+    elevation: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 4
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84
+    shadowOpacity: 0.3,
+    shadowRadius: 5
   },
   modalTitle: {
     marginBottom: 24,
