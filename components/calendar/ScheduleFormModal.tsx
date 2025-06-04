@@ -83,13 +83,20 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     }
   }, [formData, onSave, onDismiss]);
 
-  const handleDatePress = (name: 'startDate' | 'endDate', date: string) => {
-    handleChange(name, date);
+  const handleDateTimeChange = (name: 'startDate' | 'endDate', date: string, time: string) => {
+    const dateTime = `${date}T${time}`;
+    handleChange(name, dateTime);
     if (name === 'startDate') {
       setShowStartCalendar(false);
     } else {
       setShowEndCalendar(false);
     }
+  };
+
+  const formatDateTime = (dateTime: string) => {
+    if (!dateTime) return { date: '', time: '' };
+    const [date, time] = dateTime.split('T');
+    return { date, time: time || '' };
   };
 
   return (
@@ -130,8 +137,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
             <View style={styles.inputContainer}>
               <TextInput
                 label="시작 날짜 *"
-                value={formData.startDate}
-                onChangeText={(text: string) => handleChange('startDate', text)}
+                value={formatDateTime(formData.startDate).date}
+                onChangeText={(text: string) => 
+                  handleDateTimeChange('startDate', text, formatDateTime(formData.startDate).time)}
                 style={styles.input}
                 mode="outlined"
                 dense
@@ -139,11 +147,23 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 right={<TextInput.Icon icon="calendar-start" onPress={() => setShowStartCalendar(true)} />}
                 error={errors.startDate}
               />
+              <TextInput
+                label="시작 시간"
+                value={formatDateTime(formData.startDate).time}
+                onChangeText={(text: string) => 
+                  handleDateTimeChange('startDate', formatDateTime(formData.startDate).date, text)}
+                style={styles.input}
+                mode="outlined"
+                dense
+                placeholder="HH:mm"
+                right={<TextInput.Icon icon="clock-outline" />}
+              />
               {showStartCalendar && (
                 <Calendar
-                  onDayPress={(day: any) => handleDatePress('startDate', day.dateString)}
+                  onDayPress={(day: any) => 
+                    handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
                   markedDates={{
-                    [formData.startDate]: {selected: true, marked: true}
+                    [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
                   }}
                   style={styles.calendar}
                 />
@@ -156,8 +176,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
             <View style={styles.inputContainer}>
               <TextInput
                 label="종료 날짜 *"
-                value={formData.endDate}
-                onChangeText={(text: string) => handleChange('endDate', text)}
+                value={formatDateTime(formData.endDate).date}
+                onChangeText={(text: string) => 
+                  handleDateTimeChange('endDate', text, formatDateTime(formData.endDate).time)}
                 style={styles.input}
                 mode="outlined"
                 dense
@@ -165,13 +186,25 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 right={<TextInput.Icon icon="calendar-end" onPress={() => setShowEndCalendar(true)} />}
                 error={errors.endDate}
               />
+              <TextInput
+                label="종료 시간"
+                value={formatDateTime(formData.endDate).time}
+                onChangeText={(text: string) => 
+                  handleDateTimeChange('endDate', formatDateTime(formData.endDate).date, text)}
+                style={styles.input}
+                mode="outlined"
+                dense
+                placeholder="HH:mm"
+                right={<TextInput.Icon icon="clock-outline" />}
+              />
               {showEndCalendar && (
                 <Calendar
-                  onDayPress={(day: any) => handleDatePress('endDate', day.dateString)}
+                  onDayPress={(day: any) => 
+                    handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
                   markedDates={{
-                    [formData.endDate]: {selected: true, marked: true}
+                    [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
                   }}
-                  minDate={formData.startDate}
+                  minDate={formatDateTime(formData.startDate).date}
                   style={styles.calendar}
                 />
               )}
