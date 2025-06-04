@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Modal as RNModal, StyleSheet, View, KeyboardAvoidingView, Platform} from 'react-native';
 import {Text, TextInput, Button, useTheme, Portal, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
+import {Calendar} from 'react-native-calendars';
 
 interface ScheduleFormModalProps {
   visible: boolean;
@@ -26,6 +27,8 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     startDate: false,
     endDate: false
   });
+  const [showStartCalendar, setShowStartCalendar] = React.useState(false);
+  const [showEndCalendar, setShowEndCalendar] = React.useState(false);
 
   React.useEffect(() => {
     if (editingSchedule) {
@@ -80,6 +83,15 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     }
   }, [formData, onSave, onDismiss]);
 
+  const handleDatePress = (name: 'startDate' | 'endDate', date: string) => {
+    handleChange(name, date);
+    if (name === 'startDate') {
+      setShowStartCalendar(false);
+    } else {
+      setShowEndCalendar(false);
+    }
+  };
+
   return (
     <Portal>
       <RNModal
@@ -124,9 +136,18 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 mode="outlined"
                 dense
                 placeholder="YYYY-MM-DD"
-                right={<TextInput.Icon icon="calendar-start" />}
+                right={<TextInput.Icon icon="calendar-start" onPress={() => setShowStartCalendar(true)} />}
                 error={errors.startDate}
               />
+              {showStartCalendar && (
+                <Calendar
+                  onDayPress={(day: any) => handleDatePress('startDate', day.dateString)}
+                  markedDates={{
+                    [formData.startDate]: {selected: true, marked: true}
+                  }}
+                  style={styles.calendar}
+                />
+              )}
               {errors.startDate && (
                 <HelperText type="error">시작 날짜를 입력해주세요</HelperText>
               )}
@@ -141,9 +162,19 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 mode="outlined"
                 dense
                 placeholder="YYYY-MM-DD"
-                right={<TextInput.Icon icon="calendar-end" />}
+                right={<TextInput.Icon icon="calendar-end" onPress={() => setShowEndCalendar(true)} />}
                 error={errors.endDate}
               />
+              {showEndCalendar && (
+                <Calendar
+                  onDayPress={(day: any) => handleDatePress('endDate', day.dateString)}
+                  markedDates={{
+                    [formData.endDate]: {selected: true, marked: true}
+                  }}
+                  minDate={formData.startDate}
+                  style={styles.calendar}
+                />
+              )}
               {errors.endDate && (
                 <HelperText type="error">종료 날짜를 입력해주세요</HelperText>
               )}
@@ -229,5 +260,17 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 8
+  },
+  calendar: {
+    marginTop: 8,
+    borderRadius: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84
   }
 });
