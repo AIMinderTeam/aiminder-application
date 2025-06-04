@@ -193,6 +193,19 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 right={<TextInput.Icon icon="calendar-start" onPress={() => setShowStartCalendar(true)} />}
                 error={errors.startDate}
               />
+              {showStartCalendar && (
+                <Calendar
+                  onDayPress={(day: any) =>
+                    handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
+                  markedDates={{
+                    [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
+                  }}
+                  style={styles.calendar}
+                />
+              )}
+              {errors.startDate && (
+                <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
+              )}
               <TextInput
                 label="시작 시간"
                 value={formatDateTime(formData.startDate).time}
@@ -205,19 +218,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 right={<TextInput.Icon icon="clock-outline" />}
                 error={errors.startTime}
               />
-              {showStartCalendar && (
-                <Calendar
-                  onDayPress={(day: any) => 
-                    handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
-                markedDates={{
-                  [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
-                }}
-                style={styles.calendar}
-              />
-            )}
-            {errors.startDate && (
-              <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
-            )}
+
             {errors.startTime && (
               <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
             )}
@@ -236,6 +237,20 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
               right={<TextInput.Icon icon="calendar-end" onPress={() => setShowEndCalendar(true)} />}
               error={errors.endDate}
             />
+            {showEndCalendar && (
+              <Calendar
+                onDayPress={(day: any) =>
+                  handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
+                markedDates={{
+                  [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
+                }}
+                minDate={formatDateTime(formData.startDate).date}
+                style={styles.calendar}
+              />
+            )}
+            {errors.endDate && (
+              <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
+            )}
             <TextInput
               label="종료 시간"
               value={formatDateTime(formData.endDate).time}
@@ -248,20 +263,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
               right={<TextInput.Icon icon="clock-outline" />}
               error={errors.endTime}
             />
-            {showEndCalendar && (
-              <Calendar
-                onDayPress={(day: any) => 
-                  handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
-                markedDates={{
-                  [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
-                }}
-                minDate={formatDateTime(formData.startDate).date}
-                style={styles.calendar}
-              />
-            )}
-            {errors.endDate && (
-              <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
-            )}
             {errors.endTime && (
               <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
             )}
