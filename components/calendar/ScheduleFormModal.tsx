@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal as RNModal, StyleSheet, View, KeyboardAvoidingView, Platform} from 'react-native';
+import {Modal as RNModal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import {Text, TextInput, Button, useTheme, Portal, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 import {Calendar} from 'react-native-calendars';
@@ -158,149 +158,153 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.modalOverlay}
         >
-          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
-            <Text variant="headlineMedium" style={[styles.modalTitle, { color: theme.colors.primary }]}>
-              {editingSchedule ? '일정 수정' : '새 일정 추가'}
-            </Text>
+          <View style={[styles.modalWrapper, { backgroundColor: theme.colors.surface }]}>
+            <ScrollView style={styles.scrollView}>
+              <View style={styles.modalContent}>
+                <Text variant="headlineMedium" style={[styles.modalTitle, { color: theme.colors.primary }]}>
+                  {editingSchedule ? '일정 수정' : '새 일정 추가'}
+                </Text>
 
-            <View style={styles.inputContainer}>
-              <TextInput
-                label="제목 *"
-                value={formData.title}
-                onChangeText={(text: string) => handleChange('title', text)}
-                style={styles.input}
-                mode="outlined"
-                dense
-                placeholder="일정 제목을 입력하세요"
-                right={<TextInput.Icon icon="calendar" />}
-                error={errors.title}
-              />
-              {errors.title && (
-                <HelperText type="error">제목을 입력해주세요</HelperText>
-              )}
-            </View>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    label="제목 *"
+                    value={formData.title}
+                    onChangeText={(text: string) => handleChange('title', text)}
+                    style={styles.input}
+                    mode="outlined"
+                    dense
+                    placeholder="일정 제목을 입력하세요"
+                    right={<TextInput.Icon icon="calendar" />}
+                    error={errors.title}
+                  />
+                  {errors.title && (
+                    <HelperText type="error">제목을 입력해주세요</HelperText>
+                  )}
+                </View>
 
-            <View style={styles.inputContainer}>
-              <TextInput
-                label="시작 날짜 *"
-                value={formatDateTime(formData.startDate).date}
-                onChangeText={(text: string) => 
-                  handleDateTimeChange('startDate', text, formatDateTime(formData.startDate).time)}
-                style={styles.input}
-                mode="outlined"
-                dense
-                placeholder="YYYY-MM-DD"
-                right={<TextInput.Icon icon="calendar-start" onPress={() => setShowStartCalendar(true)} />}
-                error={errors.startDate}
-              />
-              {showStartCalendar && (
-                <Calendar
-                  onDayPress={(day: any) =>
-                    handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
-                  markedDates={{
-                    [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
-                  }}
-                  style={styles.calendar}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    label="시작 날짜 *"
+                    value={formatDateTime(formData.startDate).date}
+                    onChangeText={(text: string) => 
+                      handleDateTimeChange('startDate', text, formatDateTime(formData.startDate).time)}
+                    style={styles.input}
+                    mode="outlined"
+                    dense
+                    placeholder="YYYY-MM-DD"
+                    right={<TextInput.Icon icon="calendar-start" onPress={() => setShowStartCalendar(true)} />}
+                    error={errors.startDate}
+                  />
+                  {showStartCalendar && (
+                    <Calendar
+                      onDayPress={(day: any) =>
+                        handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
+                      markedDates={{
+                        [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
+                      }}
+                      style={styles.calendar}
+                    />
+                  )}
+                  {errors.startDate && (
+                    <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
+                  )}
+                  <TextInput
+                    label="시작 시간"
+                    value={formatDateTime(formData.startDate).time}
+                    onChangeText={(text: string) => 
+                      handleDateTimeChange('startDate', formatDateTime(formData.startDate).date, text)}
+                    style={styles.input}
+                    mode="outlined"
+                    dense
+                    placeholder="HH:mm"
+                    right={<TextInput.Icon icon="clock-outline" />}
+                    error={errors.startTime}
+                  />
+
+                {errors.startTime && (
+                  <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="종료 날짜 *"
+                  value={formatDateTime(formData.endDate).date}
+                  onChangeText={(text: string) => 
+                    handleDateTimeChange('endDate', text, formatDateTime(formData.endDate).time)}
+                  style={styles.input}
+                  mode="outlined"
+                  dense
+                  placeholder="YYYY-MM-DD"
+                  right={<TextInput.Icon icon="calendar-end" onPress={() => setShowEndCalendar(true)} />}
+                  error={errors.endDate}
                 />
-              )}
-              {errors.startDate && (
-                <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
-              )}
+                {showEndCalendar && (
+                  <Calendar
+                    onDayPress={(day: any) =>
+                      handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
+                    markedDates={{
+                      [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
+                    }}
+                    minDate={formatDateTime(formData.startDate).date}
+                    style={styles.calendar}
+                  />
+                )}
+                {errors.endDate && (
+                  <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
+                )}
+                <TextInput
+                  label="종료 시간"
+                  value={formatDateTime(formData.endDate).time}
+                  onChangeText={(text: string) => 
+                    handleDateTimeChange('endDate', formatDateTime(formData.endDate).date, text)}
+                  style={styles.input}
+                  mode="outlined"
+                  dense
+                  placeholder="HH:mm"
+                  right={<TextInput.Icon icon="clock-outline" />}
+                  error={errors.endTime}
+                />
+                {errors.endTime && (
+                  <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
+                )}
+                {errors.dateRange && (
+                  <HelperText type="error">종료 일시는 시작 일시보다 늦어야 합니다</HelperText>
+                )}
+              </View>
+
               <TextInput
-                label="시작 시간"
-                value={formatDateTime(formData.startDate).time}
-                onChangeText={(text: string) => 
-                  handleDateTimeChange('startDate', formatDateTime(formData.startDate).date, text)}
-                style={styles.input}
+                label="상세 설명"
+                value={formData.description}
+                onChangeText={(text: string) => handleChange('description', text)}
+                multiline
+                numberOfLines={4}
+                style={[styles.input, styles.textArea]}
                 mode="outlined"
                 dense
-                placeholder="HH:mm"
-                right={<TextInput.Icon icon="clock-outline" />}
-                error={errors.startTime}
+                placeholder="일정에 대한 상세 설명을 입력하세요"
               />
 
-            {errors.startTime && (
-              <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
-            )}
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="종료 날짜 *"
-              value={formatDateTime(formData.endDate).date}
-              onChangeText={(text: string) => 
-                handleDateTimeChange('endDate', text, formatDateTime(formData.endDate).time)}
-              style={styles.input}
-              mode="outlined"
-              dense
-              placeholder="YYYY-MM-DD"
-              right={<TextInput.Icon icon="calendar-end" onPress={() => setShowEndCalendar(true)} />}
-              error={errors.endDate}
-            />
-            {showEndCalendar && (
-              <Calendar
-                onDayPress={(day: any) =>
-                  handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
-                markedDates={{
-                  [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
-                }}
-                minDate={formatDateTime(formData.startDate).date}
-                style={styles.calendar}
-              />
-            )}
-            {errors.endDate && (
-              <HelperText type="error">올바른 날짜 형식을 입력해주세요 (YYYY-MM-DD)</HelperText>
-            )}
-            <TextInput
-              label="종료 시간"
-              value={formatDateTime(formData.endDate).time}
-              onChangeText={(text: string) => 
-                handleDateTimeChange('endDate', formatDateTime(formData.endDate).date, text)}
-              style={styles.input}
-              mode="outlined"
-              dense
-              placeholder="HH:mm"
-              right={<TextInput.Icon icon="clock-outline" />}
-              error={errors.endTime}
-            />
-            {errors.endTime && (
-              <HelperText type="error">올바른 시간 형식을 입력해주세요 (HH:mm)</HelperText>
-            )}
-            {errors.dateRange && (
-              <HelperText type="error">종료 일시는 시작 일시보다 늦어야 합니다</HelperText>
-            )}
-          </View>
-
-          <TextInput
-            label="상세 설명"
-            value={formData.description}
-            onChangeText={(text: string) => handleChange('description', text)}
-            multiline
-            numberOfLines={4}
-            style={[styles.input, styles.textArea]}
-            mode="outlined"
-            dense
-            placeholder="일정에 대한 상세 설명을 입력하세요"
-          />
-
-          <View style={styles.buttonContainer}>
-            <Button 
-              onPress={onDismiss} 
-              style={styles.button}
-              mode="outlined"
-              icon="close"
-            >
-              취소
-            </Button>
-            <Button 
-              mode="contained" 
-              onPress={handleSave}
-              style={styles.button}
-              icon="check"
-            >
-              저장
-            </Button>
-          </View>
+              <View style={styles.buttonContainer}>
+                <Button 
+                  onPress={onDismiss} 
+                  style={styles.button}
+                  mode="outlined"
+                  icon="close"
+                >
+                  취소
+                </Button>
+                <Button 
+                  mode="contained" 
+                  onPress={handleSave}
+                  style={styles.button}
+                  icon="check"
+                >
+                  저장
+                </Button>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </RNModal>
@@ -311,16 +315,16 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // 배경 투명도 증가
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20
   },
-  modalContent: {
-    padding: 28,
+  modalWrapper: {
     borderRadius: 20,
     width: '100%',
     maxWidth: 520,
+    maxHeight: '80%',
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: {
@@ -329,6 +333,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 5
+  },
+  scrollView: {
+    width: '100%',
+  },
+  modalContent: {
+    padding: 28,
   },
   modalTitle: {
     marginBottom: 24,
