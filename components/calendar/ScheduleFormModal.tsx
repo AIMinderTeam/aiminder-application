@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Modal as RNModal, StyleSheet, View, KeyboardAvoidingView, Platform} from 'react-native';
-import {Text, TextInput, Button, useTheme, Portal} from 'react-native-paper';
+import {Text, TextInput, Button, useTheme, Portal, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 
 interface ScheduleFormModalProps {
@@ -21,6 +21,11 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   setFormData
 }) => {
   const theme = useTheme();
+  const [errors, setErrors] = React.useState({
+    title: false,
+    startDate: false,
+    endDate: false
+  });
 
   React.useEffect(() => {
     if (editingSchedule) {
@@ -49,11 +54,30 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
       ...formData,
       [name]: value,
     });
+    if (errors[name as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: false
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors = {
+      title: !formData.title.trim(),
+      startDate: !formData.startDate.trim(),
+      endDate: !formData.endDate.trim()
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error);
   };
 
   const handleSave = React.useCallback(() => {
-    onSave(formData);
-    onDismiss();
+    if (validateForm()) {
+      onSave(formData);
+      onDismiss();
+    }
   }, [formData, onSave, onDismiss]);
 
   return (
@@ -74,38 +98,56 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
               {editingSchedule ? '일정 수정' : '새 일정 추가'}
             </Text>
 
-            <TextInput
-              label="제목"
-              value={formData.title}
-              onChangeText={(text: string) => handleChange('title', text)}
-              style={styles.input}
-              mode="outlined"
-              dense
-              placeholder="일정 제목을 입력하세요"
-              right={<TextInput.Icon icon="calendar" />}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                label="제목 *"
+                value={formData.title}
+                onChangeText={(text: string) => handleChange('title', text)}
+                style={styles.input}
+                mode="outlined"
+                dense
+                placeholder="일정 제목을 입력하세요"
+                right={<TextInput.Icon icon="calendar" />}
+                error={errors.title}
+              />
+              {errors.title && (
+                <HelperText type="error">제목을 입력해주세요</HelperText>
+              )}
+            </View>
 
-            <TextInput
-              label="시작 날짜"
-              value={formData.startDate}
-              onChangeText={(text: string) => handleChange('startDate', text)}
-              style={styles.input}
-              mode="outlined"
-              dense
-              placeholder="YYYY-MM-DD"
-              right={<TextInput.Icon icon="calendar-start" />}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                label="시작 날짜 *"
+                value={formData.startDate}
+                onChangeText={(text: string) => handleChange('startDate', text)}
+                style={styles.input}
+                mode="outlined"
+                dense
+                placeholder="YYYY-MM-DD"
+                right={<TextInput.Icon icon="calendar-start" />}
+                error={errors.startDate}
+              />
+              {errors.startDate && (
+                <HelperText type="error">시작 날짜를 입력해주세요</HelperText>
+              )}
+            </View>
 
-            <TextInput
-              label="종료 날짜"
-              value={formData.endDate}
-              onChangeText={(text: string) => handleChange('endDate', text)}
-              style={styles.input}
-              mode="outlined"
-              dense
-              placeholder="YYYY-MM-DD"
-              right={<TextInput.Icon icon="calendar-end" />}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                label="종료 날짜 *"
+                value={formData.endDate}
+                onChangeText={(text: string) => handleChange('endDate', text)}
+                style={styles.input}
+                mode="outlined"
+                dense
+                placeholder="YYYY-MM-DD"
+                right={<TextInput.Icon icon="calendar-end" />}
+                error={errors.endDate}
+              />
+              {errors.endDate && (
+                <HelperText type="error">종료 날짜를 입력해주세요</HelperText>
+              )}
+            </View>
 
             <TextInput
               label="상세 설명"
@@ -170,8 +212,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center'
   },
+  inputContainer: {
+    marginBottom: 8,
+  },
   input: {
-    marginBottom: 16
+    marginBottom: 4,
   },
   textArea: {
     minHeight: 100
