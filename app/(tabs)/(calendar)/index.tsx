@@ -13,8 +13,6 @@ export default function CalendarScreen() {
     selectedDate,
     visible,
     editingSchedule,
-    formData,
-    setFormData,
     setSelectedDate,
     showModal,
     hideModal,
@@ -45,8 +43,6 @@ export default function CalendarScreen() {
         onDismiss={hideModal}
         onSave={handleSaveSchedule}
         editingSchedule={editingSchedule}
-        formData={formData}
-        setFormData={setFormData}
       />
 
       <FAB

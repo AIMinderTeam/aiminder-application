@@ -1,16 +1,15 @@
 import * as React from 'react';
-import {Modal as RNModal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import {Modal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import {Text, TextInput, Button, useTheme, Portal, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 import {Calendar} from 'react-native-calendars';
+import {useSchedules} from "@/hooks/calendar/useSchedule";
 
 interface ScheduleFormModalProps {
   visible: boolean;
   onDismiss: () => void;
   onSave: (data: { title: string; time: string; description: string }) => void;
   editingSchedule: Schedule | null;
-  formData: Schedule;
-  setFormData: (data: Schedule) => void;
 }
 
 interface FormErrors {
@@ -22,15 +21,17 @@ interface FormErrors {
   dateRange: boolean;
 }
 
-
 export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   visible,
   onDismiss,
   onSave,
   editingSchedule,
-  formData,
-  setFormData
 }) => {
+  const {
+    formData,
+    setFormData,
+  } = useSchedules();
+
   const theme = useTheme();
   const [showStartCalendar, setShowStartCalendar] = React.useState(false);
   const [showEndCalendar, setShowEndCalendar] = React.useState(false);
@@ -146,15 +147,14 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   };
 
   return (
-    <Portal>
-      <RNModal
+      <Modal
         visible={visible}
         onRequestClose={onDismiss}
         transparent
         animationType="fade"
         statusBarTranslucent
       >
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.modalOverlay}
         >
@@ -307,8 +307,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
-    </RNModal>
-  </Portal>
+    </Modal>
 );
 });
 
