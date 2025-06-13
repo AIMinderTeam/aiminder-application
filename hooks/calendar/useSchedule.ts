@@ -11,7 +11,6 @@ export const useSchedules = () => {
   const [formData, setFormData] = React.useState<Schedule>({
     id: '',
     title: '',
-    time: '',
     description: '',
     startDate: '',
     endDate: '',
@@ -25,7 +24,6 @@ export const useSchedules = () => {
     setFormData({
       id: '',
       title: '',
-      time: '',
       description: '',
       startDate: '',
       endDate: '',
@@ -48,7 +46,6 @@ export const useSchedules = () => {
     setFormData({
       id: schedule.id,
       title: schedule.title,
-      time: schedule.time,
       description: schedule.description,
       startDate: schedule.startDate,
       endDate: schedule.endDate,

@@ -71,7 +71,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
         startDate: editingSchedule.startDate,
         endDate: editingSchedule.endDate,
         title: editingSchedule.title,
-        time: editingSchedule.time,
         description: editingSchedule.description,
       });
     } else {
@@ -80,7 +79,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
         startDate: '',
         endDate: '',
         title: '',
-        time: '',
         description: '',
       });
     }

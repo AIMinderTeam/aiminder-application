@@ -3,7 +3,6 @@ export interface Schedule {
   startDate: string;
   endDate: string;
   title: string;
-  time: string;
   description: string;
 }
 
