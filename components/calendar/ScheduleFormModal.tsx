@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Modal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
-import {Text, TextInput, Button, useTheme, Portal, HelperText} from 'react-native-paper';
+import {Text, TextInput, Button, useTheme, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 import {Calendar} from 'react-native-calendars';
 import {useSchedules} from "@/hooks/calendar/useSchedule";
