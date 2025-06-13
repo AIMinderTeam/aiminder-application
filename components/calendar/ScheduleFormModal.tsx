@@ -69,7 +69,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
       setFormData({
         id: editingSchedule.id,
         startDate: editingSchedule.startDate,
+        startTime: editingSchedule.startTime,
         endDate: editingSchedule.endDate,
+        endTime: editingSchedule.endTime,
         title: editingSchedule.title,
         description: editingSchedule.description,
       });
@@ -77,7 +79,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
       setFormData({
         id: '',
         startDate: '',
+        startTime: '',
         endDate: '',
+        endTime: '',
         title: '',
         description: '',
       });
@@ -98,11 +102,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   };
 
   const validateForm = (): boolean => {
-    const { startDate: startDateTime, endDate: endDateTime } = formData;
-    const startDate = formatDateTime(startDateTime).date;
-    const startTime = formatDateTime(startDateTime).time;
-    const endDate = formatDateTime(endDateTime).date;
-    const endTime = formatDateTime(endDateTime).time;
+    const { startDate, startTime, endDate, endTime } = formData;
 
     const newErrors: FormErrors = {
       title: !formData.title.trim(),
@@ -114,6 +114,8 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     };
 
     if (!newErrors.startDate && !newErrors.endDate && !newErrors.startTime && !newErrors.endTime) {
+      const startDateTime = `${startDate}T${startTime}`;
+      const endDateTime = `${endDate}T${endTime}`;
       newErrors.dateRange = !isStartDateTimeValid(startDateTime, endDateTime);
     }
 
@@ -128,21 +130,20 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     }
   }, [formData, onSave, onDismiss]);
 
-  const handleDateTimeChange = (name: 'startDate' | 'endDate', date: string, time: string) => {
-    const dateTime = `${date}T${time}`;
-    handleChange(name, dateTime);
-    if (name === 'startDate') {
+  const handleDateTimeChange = (type: 'start' | 'end', date?: string, time?: string) => {
+    if (date) {
+      handleChange(`${type}Date`, date);
+    }
+    if (time) {
+      handleChange(`${type}Time`, time);
+    }
+    if (type === 'start' && date) {
       setShowStartCalendar(false);
-    } else {
+    } else if (type === 'end' && date) {
       setShowEndCalendar(false);
     }
   };
 
-  const formatDateTime = (dateTime: string) => {
-    if (!dateTime) return { date: '', time: '' };
-    const [date, time] = dateTime.split('T');
-    return { date, time: time || '' };
-  };
 
   return (
       <Modal
@@ -183,9 +184,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 <View style={styles.inputContainer}>
                   <TextInput
                     label="시작 날짜 *"
-                    value={formatDateTime(formData.startDate).date}
+                    value={formData.startDate}
                     onChangeText={(text: string) => 
-                      handleDateTimeChange('startDate', text, formatDateTime(formData.startDate).time)}
+                      handleDateTimeChange('start', text)}
                     style={styles.input}
                     mode="outlined"
                     dense
@@ -196,9 +197,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                   {showStartCalendar && (
                     <Calendar
                       onDayPress={(day: any) =>
-                        handleDateTimeChange('startDate', day.dateString, formatDateTime(formData.startDate).time)}
+                        handleDateTimeChange('start', day.dateString)}
                       markedDates={{
-                        [formatDateTime(formData.startDate).date]: {selected: true, marked: true}
+                        [formData.startDate]: {selected: true, marked: true}
                       }}
                       style={styles.calendar}
                     />
@@ -208,9 +209,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                   )}
                   <TextInput
                     label="시작 시간"
-                    value={formatDateTime(formData.startDate).time}
+                    value={formData.startTime}
                     onChangeText={(text: string) => 
-                      handleDateTimeChange('startDate', formatDateTime(formData.startDate).date, text)}
+                      handleDateTimeChange('start', undefined, text)}
                     style={styles.input}
                     mode="outlined"
                     dense
@@ -227,9 +228,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
               <View style={styles.inputContainer}>
                 <TextInput
                   label="종료 날짜 *"
-                  value={formatDateTime(formData.endDate).date}
+                  value={formData.endDate}
                   onChangeText={(text: string) => 
-                    handleDateTimeChange('endDate', text, formatDateTime(formData.endDate).time)}
+                    handleDateTimeChange('end', text)}
                   style={styles.input}
                   mode="outlined"
                   dense
@@ -240,11 +241,11 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 {showEndCalendar && (
                   <Calendar
                     onDayPress={(day: any) =>
-                      handleDateTimeChange('endDate', day.dateString, formatDateTime(formData.endDate).time)}
+                      handleDateTimeChange('end', day.dateString)}
                     markedDates={{
-                      [formatDateTime(formData.endDate).date]: {selected: true, marked: true}
+                      [formData.endDate]: {selected: true, marked: true}
                     }}
-                    minDate={formatDateTime(formData.startDate).date}
+                    minDate={formData.startDate}
                     style={styles.calendar}
                   />
                 )}
@@ -253,9 +254,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
                 )}
                 <TextInput
                   label="종료 시간"
-                  value={formatDateTime(formData.endDate).time}
+                  value={formData.endTime}
                   onChangeText={(text: string) => 
-                    handleDateTimeChange('endDate', formatDateTime(formData.endDate).date, text)}
+                    handleDateTimeChange('end', undefined, text)}
                   style={styles.input}
                   mode="outlined"
                   dense

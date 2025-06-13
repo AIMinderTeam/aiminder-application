@@ -13,7 +13,9 @@ export const useSchedules = () => {
     title: '',
     description: '',
     startDate: '',
+    startTime: '',
     endDate: '',
+    endTime: '',
   });
 
   const showModal = React.useCallback(() => setVisible(true), []);
@@ -26,7 +28,9 @@ export const useSchedules = () => {
       title: '',
       description: '',
       startDate: '',
+      startTime: '',
       endDate: '',
+      endTime: '',
     });
   }, []);
 
@@ -48,7 +52,9 @@ export const useSchedules = () => {
       title: schedule.title,
       description: schedule.description,
       startDate: schedule.startDate,
+      startTime: schedule.startTime,
       endDate: schedule.endDate,
+      endTime: schedule.endTime,
     });
     showModal();
   }, []);
@@ -68,8 +74,10 @@ export const useSchedules = () => {
     }
 
     schedules.forEach(sch => {
-      const cur = new Date(sch.startDate);
-      const end = new Date(sch.endDate);
+      const startDateTime = `${sch.startDate}T${sch.startTime || '00:00'}`;
+      const endDateTime = `${sch.endDate}T${sch.endTime || '23:59'}`;
+      const cur = new Date(startDateTime);
+      const end = new Date(endDateTime);
       while (cur <= end) {
         const key = cur.toISOString().split('T')[0];
         if (!items[key]) items[key] = [];

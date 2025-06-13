@@ -3,15 +3,6 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text, useTheme} from 'react-native-paper';
 import {Schedule} from '@/domain/Schedule';
 
-const formatTime = (date: Date | string) => {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString('ko-KR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-};
-
 interface ScheduleCardProps {
   schedule: Schedule;
   onPress: (schedule: Schedule) => void;
@@ -36,7 +27,7 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
                 variant="labelMedium"
                 style={[styles.time, {color: theme.colors.primary}]}
               >
-                {formatTime(schedule.startDate)} - {formatTime(schedule.endDate)}
+                {schedule.startTime} - {schedule.endTime}
               </Text>
             </View>
           </Card.Content>
