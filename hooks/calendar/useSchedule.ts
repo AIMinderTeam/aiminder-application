@@ -64,18 +64,9 @@ export const useSchedules = () => {
     hideModal();
   }, [selectedDate, formData, createSchedule, updateSchedule]);
 
-  const handleEditSchedule = React.useCallback((schedule: Schedule) => {
-    setFormData({
-      id: schedule.id,
-      title: schedule.title,
-      description: schedule.description,
-      startDate: schedule.startDate,
-      startTime: schedule.startTime,
-      endDate: schedule.endDate,
-      endTime: schedule.endTime,
-    });
+  const handleEditSchedule = React.useCallback(() => {
     showModal();
-  }, []);
+  }, [showModal]);
 
   const handleDeleteSchedule = React.useCallback((id: string) => {
     deleteSchedule(id);

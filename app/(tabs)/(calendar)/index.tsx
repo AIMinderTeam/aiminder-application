@@ -11,17 +11,18 @@ export default function CalendarScreen() {
 
   const {
     selectedDate,
-    selectedSchedule,
-    visible,
     setSelectedDate,
+    selectedSchedule,
+    setSelectedSchedule,
+    visible,
     showModal,
     hideModal,
+    getAgendaItems,
+    setFormData,
+    formData,
     handleSaveSchedule,
     handleEditSchedule,
     handleDeleteSchedule,
-    getAgendaItems,
-    setFormData,
-    formData
   } = useSchedules();
 
   return (
@@ -38,6 +39,10 @@ export default function CalendarScreen() {
         onDayPress={(day) => setSelectedDate(day.dateString)}
         onEditSchedule={handleEditSchedule}
         onDeleteSchedule={handleDeleteSchedule}
+        selectedSchedule={selectedSchedule}
+        setSelectedSchedule={setSelectedSchedule}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
       />
 
       <ScheduleFormModal
