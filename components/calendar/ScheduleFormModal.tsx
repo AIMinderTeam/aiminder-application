@@ -2,11 +2,8 @@ import * as React from 'react';
 import {Modal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import {Text, TextInput, Button, useTheme, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
-import {Calendar} from 'react-native-calendars';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
-
-// ... (ScheduleFormModalProps와 FormErrors 인터페이스는 동일)
 
 interface ScheduleFormModalProps {
   visible: boolean;
@@ -36,10 +33,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   formData,
 }) => {
   const theme = useTheme();
-  const [showStartCalendar, setShowStartCalendar] = React.useState(false);
-  const [showEndCalendar, setShowEndCalendar] = React.useState(false);
-  const [showStartTime, setShowStartTime] = React.useState(false);
-  const [showEndTime, setShowEndTime] = React.useState(false);
 
   // DateTimePicker를 위한 날짜 객체 상태 추가
   const [startDateTime, setStartDateTime] = React.useState(new Date());
@@ -115,20 +108,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     }
   }, [onSave, onDismiss]);
 
-  const handleDateTimeChange = (type: 'start' | 'end', date?: string, time?: string) => {
-    if (date) {
-      handleChange(`${type}Date`, date);
-    }
-    if (time) {
-      handleChange(`${type}Time`, time);
-    }
-    if (type === 'start' && date) {
-      setShowStartCalendar(false);
-    } else if (type === 'end' && date) {
-      setShowEndCalendar(false);
-    }
-  };
-
   const handleDateTimePickerChange = (
     type: 'start' | 'end',
     event: any,
@@ -145,7 +124,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
           startDate: formattedDate,
           startTime: formattedTime,
         });
-        setShowStartTime(false);
       } else {
         setEndDateTime(selectedDate);
         setFormData({
@@ -153,13 +131,9 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
           endDate: formattedDate,
           endTime: formattedTime,
         });
-        setShowEndTime(false);
       }
     }
-    setShowStartTime(false);
-    setShowEndTime(false);
   };
-
 
   return (
     <Modal
