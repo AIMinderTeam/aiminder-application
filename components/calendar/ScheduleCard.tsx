@@ -87,13 +87,26 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
         <Card
           style={[
             styles.card,
-            { elevation: 2, backgroundColor: statusColors.backgroundColor }
+            {
+              elevation: getScheduleStatus() === 'current' ? 6 : 2,
+              backgroundColor: statusColors.backgroundColor,
+              borderLeftWidth: 4,
+              borderLeftColor: getScheduleStatus() === 'current' ? theme.colors.primary : 'transparent'
+            }
           ]}
           mode="elevated"
         >
           <Card.Content style={styles.content}>
             <View style={styles.leftContent}>
               <View style={styles.textContainer}>
+                <Text
+                  variant="titleMedium"
+                  style={[styles.title, {color: statusColors.color}]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {schedule.title}
+                </Text>
                 <View style={styles.timeContainer}>
                   <MaterialCommunityIcons
                     name="clock-outline"
@@ -107,12 +120,16 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
                     {formatTime(schedule.startTime)} - {formatTime(schedule.endTime)}
                   </Text>
                 </View>
-                <Text
-                  variant="titleMedium"
-                  style={[styles.title, {color: statusColors.color}]}
-                >
-                  {schedule.title}
-                </Text>
+                {schedule.description ? (
+                  <Text
+                    variant="bodySmall"
+                    style={[styles.description, {color: statusColors.color, opacity: 0.8}]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {schedule.description}
+                  </Text>
+                ) : null}
               </View>
             </View>
           </Card.Content>
@@ -127,6 +144,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     marginHorizontal: 16,
     borderRadius: 16,
+    overflow: 'hidden',
   },
   content: {
     padding: 16,
@@ -136,20 +154,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textContainer: {
-    marginLeft: 12,
     flex: 1,
   },
   timeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 6,
+    marginBottom: 2,
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+    marginBottom: 2,
   },
   time: {
     fontSize: 13,
     marginLeft: 4,
+    fontWeight: '500',
+  },
+  description: {
+    fontSize: 12,
+    marginTop: 4,
+    lineHeight: 16,
   },
 });
