@@ -34,9 +34,18 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
 }) => {
   const theme = useTheme();
 
-  // DateTimePicker를 위한 날짜 객체 상태 추가
   const [startDateTime, setStartDateTime] = React.useState(new Date());
   const [endDateTime, setEndDateTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    if (selectedSchedule) {
+      const start = new Date(`${selectedSchedule.startDate}T${selectedSchedule.startTime}`);
+      const end = new Date(`${selectedSchedule.endDate}T${selectedSchedule.endTime}`);
+      
+      setStartDateTime(start);
+      setEndDateTime(end);
+    }
+  }, [selectedSchedule]);
 
   const validateDateFormat = (date: string): boolean => {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
