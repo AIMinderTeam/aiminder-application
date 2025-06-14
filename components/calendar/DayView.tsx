@@ -3,21 +3,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AgendaItem } from '@/domain/Schedule';
 
 interface DayComponentProps {
-  /** react-native-calendars 가 넘겨주는 날짜 객체 */
   date: { dateString: string; day: number };
-  /** react-native-calendars 가 넘겨주는 disabled, today 등의 상태 */
   state: string;
-  /** 해당 날짜의 일정 목록 */
   schedules: AgendaItem[];
-  /** 현재 선택된 날짜(ISO yyyy-MM-dd) */
   currentSelected: string;
-  /** 날짜를 눌렀을 때 호출될 함수 */
   onPress: (dateString: string) => void;
 }
 
-/**
- * 달력의 한 셀(일)을 그려주는 컴포넌트
- */
 export const DayView: React.FC<DayComponentProps> = React.memo(
   ({ date, state, schedules, currentSelected, onPress }) => {
     const dateKey = date?.dateString ?? '';

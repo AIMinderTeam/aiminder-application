@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {Agenda} from 'react-native-calendars';
-import {View} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
 import {DayView} from "@/components/calendar/DayView";
 import {ScheduleDetailModal} from './ScheduleDetailModal';
 import {AgendaItem, Schedule} from "@/domain/Schedule";
-import {useAgendaItems} from "@/hooks/calendar/useAgendaItems";
 import {ScheduleHeader} from "@/components/calendar/ScheduleHeader";
 import {AGENDA_THEME} from "@/constant/AgendaTheme";
 
@@ -34,8 +33,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(true);
   const agendaRef = React.useRef<any>(null);
-  
-  const displayedItems = useAgendaItems(items, isCalendarOpen, selectedDate);
+  const displayedItems = items;
 
   const handleSchedulePress = React.useCallback((schedule: Schedule) => {
     setSelectedSchedule(schedule);
@@ -61,16 +59,38 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   );
 
   const renderDayComponent = React.useCallback(
-    ({date, state}: { date: { dateString: string; day: number }; state: string }) => (
-      <DayView
-        date={date}
-        state={state}
-        schedules={displayedItems[date?.dateString ?? ''] ?? []}
-        currentSelected={selectedDate}
-        onPress={(d) => handleDayPress({dateString: d})}
-      />
-    ),
-    [displayedItems, handleDayPress, selectedDate]
+    ({date, state}: { date: { dateString: string; day: number }; state: string }) => {
+      if (!isCalendarOpen) {
+        const hasSchedules = (displayedItems[date?.dateString ?? ''] ?? []).length > 0;
+        return (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => handleDayPress({dateString: date.dateString})}
+            style={styles.dayContainer}
+          >
+            <Text style={[
+              styles.dayText,
+              state === 'disabled' && styles.disabledText,
+              date.dateString === selectedDate && styles.selectedDayText
+            ]}>
+              {date.day}
+            </Text>
+            {hasSchedules && <View style={styles.scheduleIndicator} />}
+          </TouchableOpacity>
+        );
+      }
+
+      return (
+        <DayView
+          date={date}
+          state={state}
+          schedules={displayedItems[date?.dateString ?? ''] ?? []}
+          currentSelected={selectedDate}
+          onPress={(d) => handleDayPress({dateString: d})}
+        />
+      );
+    },
+    [displayedItems, handleDayPress, selectedDate, isCalendarOpen]
   );
 
   const renderItem = React.useCallback(
@@ -116,4 +136,28 @@ export const AgendaView = React.memo<AgendaViewProps>(({
       />
     </>
   );
+});
+
+const styles = StyleSheet.create({
+  dayContainer: {
+    alignItems: 'center',
+    padding: 5,
+  },
+  dayText: {
+    fontSize: 16,
+  },
+  disabledText: {
+    color: '#ccc',
+  },
+  selectedDayText: {
+    color: '#2196F3',
+    fontWeight: 'bold',
+  },
+  scheduleIndicator: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#2196F3',
+    marginTop: 4,
+  },
 });
