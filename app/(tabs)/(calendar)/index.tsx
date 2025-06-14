@@ -11,15 +11,17 @@ export default function CalendarScreen() {
 
   const {
     selectedDate,
+    selectedSchedule,
     visible,
-    editingSchedule,
     setSelectedDate,
     showModal,
     hideModal,
     handleSaveSchedule,
     handleEditSchedule,
     handleDeleteSchedule,
-    getAgendaItems
+    getAgendaItems,
+    setFormData,
+    formData
   } = useSchedules();
 
   return (
@@ -42,7 +44,10 @@ export default function CalendarScreen() {
         visible={visible}
         onDismiss={hideModal}
         onSave={handleSaveSchedule}
-        editingSchedule={editingSchedule}
+        selectedDate={selectedDate}
+        selectedSchedule={selectedSchedule}
+        setFormData={setFormData}
+        formData={formData}
       />
 
       <FAB

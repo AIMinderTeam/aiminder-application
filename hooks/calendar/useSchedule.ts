@@ -1,52 +1,70 @@
 import * as React from 'react';
 import {AgendaItem, Schedule} from '@/domain/Schedule';
 import {useScheduleStore} from '@/stores/ScheduleStore';
+import {useDateStore} from "@/stores/DateStore";
+import * as Crypto from 'expo-crypto';
 
 export const useSchedules = () => {
-  const {schedules, createSchedule, updateSchedule, deleteSchedule} = useScheduleStore();
-  
-  const [selectedDate, setSelectedDate] = React.useState('');
+  const {
+    schedules,
+    selectedSchedule,
+    createSchedule,
+    updateSchedule,
+    deleteSchedule,
+    setSelectedSchedule
+  } = useScheduleStore();
+
+  const {selectedDate, setSelectedDate} = useDateStore();
   const [visible, setVisible] = React.useState(false);
-  const [editingSchedule, setEditingSchedule] = React.useState<Schedule | null>(null);
-  const [formData, setFormData] = React.useState<Schedule>({
-    id: '',
+
+  const createInitSchedule = () => ({
+    id: Crypto.randomUUID(),
     title: '',
     description: '',
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
+    startDate: selectedDate || '',
+    startTime: '09:00',
+    endDate: selectedDate || '',
+    endTime: '09:00',
   });
 
-  const showModal = React.useCallback(() => setVisible(true), []);
+  const [formData, setFormData] = React.useState<Schedule>(createInitSchedule());
+
+  const showModal = React.useCallback(() => {
+      if (selectedSchedule) {
+        setFormData({
+          id: selectedSchedule.id,
+          startDate: selectedSchedule.startDate,
+          startTime: selectedSchedule.startTime,
+          endDate: selectedSchedule.endDate,
+          endTime: selectedSchedule.endTime,
+          title: selectedSchedule.title,
+          description: selectedSchedule.description,
+        });
+      } else {
+        setFormData(createInitSchedule());
+      }
+      setVisible(true)
+    }, [selectedSchedule, selectedDate]
+  );
 
   const hideModal = React.useCallback(() => {
     setVisible(false);
-    setEditingSchedule(null);
-    setFormData({
-      id: '',
-      title: '',
-      description: '',
-      startDate: '',
-      startTime: '',
-      endDate: '',
-      endTime: '',
-    });
+    setSelectedSchedule(null);
+    setFormData(createInitSchedule());
   }, []);
 
   const handleSaveSchedule = React.useCallback(() => {
     if (!selectedDate || !formData.title) return;
 
-    if (editingSchedule) {
-      updateSchedule(editingSchedule.id, formData);
+    if (selectedSchedule) {
+      updateSchedule(selectedSchedule.id, formData);
     } else {
       createSchedule(formData);
     }
     hideModal();
-  }, [selectedDate, formData, editingSchedule, createSchedule, updateSchedule]);
+  }, [selectedDate, formData, createSchedule, updateSchedule]);
 
   const handleEditSchedule = React.useCallback((schedule: Schedule) => {
-    setEditingSchedule(schedule);
     setFormData({
       id: schedule.id,
       title: schedule.title,
@@ -64,7 +82,7 @@ export const useSchedules = () => {
   }, [deleteSchedule]);
 
   const getAgendaItems = React.useCallback(() => {
-    const items: {[key: string]: AgendaItem[]} = {};
+    const items: { [key: string]: AgendaItem[] } = {};
 
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -92,7 +110,6 @@ export const useSchedules = () => {
     schedules,
     selectedDate,
     visible,
-    editingSchedule,
     formData,
     setSelectedDate,
     setFormData,
@@ -101,6 +118,8 @@ export const useSchedules = () => {
     handleSaveSchedule,
     handleEditSchedule,
     handleDeleteSchedule,
-    getAgendaItems
+    getAgendaItems,
+    selectedSchedule,
+    setSelectedSchedule,
   };
 };

@@ -4,13 +4,16 @@ import {scheduleMockData} from '@/mock/ScheduleMockData';
 
 interface ScheduleState {
   schedules: Schedule[];
+  selectedSchedule: Schedule | null;
   createSchedule: (schedule: Omit<Schedule, 'id'>) => void;
   updateSchedule: (id: string, schedule: Partial<Schedule>) => void;
   deleteSchedule: (id: string) => void;
+  setSelectedSchedule: (schedule: Schedule | null) => void;
 }
 
 export const useScheduleStore = create<ScheduleState>((set) => ({
   schedules: scheduleMockData,
+  selectedSchedule: null,
   createSchedule: (schedule) => set((state) => ({
     schedules: [...state.schedules, { ...schedule, id: Date.now().toString() }]
   })),
@@ -21,5 +24,6 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
   })),
   deleteSchedule: (id) => set((state) => ({
     schedules: state.schedules.filter((schedule) => schedule.id !== id)
-  }))
+  })),
+  setSelectedSchedule: (schedule) => set({ selectedSchedule: schedule })
 }));

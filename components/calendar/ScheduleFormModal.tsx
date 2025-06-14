@@ -3,13 +3,15 @@ import {Modal, StyleSheet, View, KeyboardAvoidingView, Platform, ScrollView} fro
 import {Text, TextInput, Button, useTheme, HelperText} from 'react-native-paper';
 import {Schedule} from "@/domain/Schedule";
 import {Calendar} from 'react-native-calendars';
-import {useSchedules} from "@/hooks/calendar/useSchedule";
 
 interface ScheduleFormModalProps {
   visible: boolean;
   onDismiss: () => void;
-  onSave: (data: { title: string; time: string; description: string }) => void;
-  editingSchedule: Schedule | null;
+  onSave: () => void;
+  selectedDate: string;
+  selectedSchedule: Schedule | null;
+  setFormData: (data: Schedule) => void;
+  formData: Schedule;
 }
 
 interface FormErrors {
@@ -25,13 +27,10 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
   visible,
   onDismiss,
   onSave,
-  editingSchedule,
+  selectedSchedule,
+  setFormData,
+  formData,
 }) => {
-  const {
-    formData,
-    setFormData,
-  } = useSchedules();
-
   const theme = useTheme();
   const [showStartCalendar, setShowStartCalendar] = React.useState(false);
   const [showEndCalendar, setShowEndCalendar] = React.useState(false);
@@ -63,30 +62,6 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
     endTime: false,
     dateRange: false
   });
-
-  React.useEffect(() => {
-    if (editingSchedule) {
-      setFormData({
-        id: editingSchedule.id,
-        startDate: editingSchedule.startDate,
-        startTime: editingSchedule.startTime,
-        endDate: editingSchedule.endDate,
-        endTime: editingSchedule.endTime,
-        title: editingSchedule.title,
-        description: editingSchedule.description,
-      });
-    } else {
-      setFormData({
-        id: '',
-        startDate: '',
-        startTime: '',
-        endDate: '',
-        endTime: '',
-        title: '',
-        description: '',
-      });
-    }
-  }, [editingSchedule]);
 
   const handleChange = (name: keyof Schedule, value: string) => {
     setFormData({
@@ -125,10 +100,10 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
 
   const handleSave = React.useCallback(() => {
     if (validateForm()) {
-      onSave(formData);
+      onSave();
       onDismiss();
     }
-  }, [formData, onSave, onDismiss]);
+  }, [onSave, onDismiss]);
 
   const handleDateTimeChange = (type: 'start' | 'end', date?: string, time?: string) => {
     if (date) {
@@ -161,7 +136,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
             <ScrollView style={styles.scrollView}>
               <View style={styles.modalContent}>
                 <Text variant="headlineMedium" style={[styles.modalTitle, { color: theme.colors.primary }]}>
-                  {editingSchedule ? '일정 수정' : '새 일정 추가'}
+                  {selectedSchedule ? '일정 수정' : '새 일정 추가'}
                 </Text>
 
                 <View style={styles.inputContainer}>
@@ -286,7 +261,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = React.memo(({
 
               <View style={styles.buttonContainer}>
                 <Button 
-                  onPress={onDismiss} 
+                  onPress={onDismiss}
                   style={styles.button}
                   mode="outlined"
                   icon="close"
