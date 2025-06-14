@@ -44,10 +44,10 @@ export const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
             />
             <View style={styles.timeTextContainer}>
               <Text variant="bodyMedium" style={styles.dateText}>
-                시작: {new Date(schedule.startDate).toLocaleString('ko-KR')}
+                시작: {new Date(`${schedule.startDate}T${schedule.startTime}`).toLocaleString('ko-KR')}
               </Text>
               <Text variant="bodyMedium" style={styles.dateText}>
-                종료: {new Date(schedule.endDate).toLocaleString('ko-KR')}
+                종료: {new Date(`${schedule.endDate}T${schedule.endTime}`).toLocaleString('ko-KR')}
               </Text>
             </View>
           </View>
