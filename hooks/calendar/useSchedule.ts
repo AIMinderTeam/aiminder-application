@@ -76,9 +76,10 @@ export const useSchedules = () => {
     const items: { [key: string]: AgendaItem[] } = {};
 
     const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    for (let d = firstDay; d <= lastDay; d.setDate(d.getDate() + 1)) {
+    const firstDay = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 3, 0);
+
+    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
       items[d.toISOString().split('T')[0]] = [];
     }
 

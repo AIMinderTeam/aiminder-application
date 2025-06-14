@@ -2,6 +2,7 @@ import * as React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text, useTheme} from 'react-native-paper';
 import {Schedule} from '@/domain/Schedule';
+import {format} from 'date-fns';
 
 interface ScheduleCardProps {
   schedule: Schedule;
@@ -11,6 +12,15 @@ interface ScheduleCardProps {
 export const ScheduleCard = React.memo<ScheduleCardProps>(
   ({schedule, onPress}) => {
     const theme = useTheme();
+
+    const formatTime = (timeString: string) => {
+      const [hours, minutes] = timeString.split(':');
+      const date = new Date();
+      date.setHours(parseInt(hours));
+      date.setMinutes(parseInt(minutes));
+      
+      return format(date, 'hh:mm a');
+    };
 
     return (
       <TouchableOpacity
@@ -27,7 +37,7 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
                 variant="labelMedium"
                 style={[styles.time, {color: theme.colors.primary}]}
               >
-                {schedule.startTime} - {schedule.endTime}
+                {formatTime(schedule.startTime)} - {formatTime(schedule.endTime)}
               </Text>
             </View>
           </Card.Content>
