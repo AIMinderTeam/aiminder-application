@@ -5,7 +5,6 @@ import {ScheduleCard} from './ScheduleCard';
 import {EmptySchedule} from './EmptySchedule';
 import {DayView} from "@/components/calendar/DayView";
 import {ScheduleDetailModal} from './ScheduleDetailModal';
-import {useDateStore} from "@/stores/DateStore";
 import {AgendaItem, Schedule} from "@/domain/Schedule";
 import {useAgendaItems} from "@/hooks/calendar/useAgendaItems";
 import {ScheduleHeader} from "@/components/calendar/ScheduleHeader";
