@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Card, Text, useTheme, Surface} from 'react-native-paper';
+import {Card, Text, useTheme} from 'react-native-paper';
 import {Schedule} from '@/domain/Schedule';
-import {format, isAfter, isBefore, isWithinInterval} from 'date-fns';
+import {format, isBefore, isWithinInterval} from 'date-fns';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 interface ScheduleCardProps {
