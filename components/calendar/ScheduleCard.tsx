@@ -2,8 +2,9 @@ import * as React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text, useTheme} from 'react-native-paper';
 import {Schedule} from '@/domain/Schedule';
-import {format, isBefore, isWithinInterval} from 'date-fns';
+import {format, isBefore, isWithinInterval, parseISO} from 'date-fns';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
 
 interface ScheduleCardProps {
   schedule: Schedule;
@@ -13,6 +14,10 @@ interface ScheduleCardProps {
 export const ScheduleCard = React.memo<ScheduleCardProps>(
   ({schedule, onPress}) => {
     const theme = useTheme();
+    const [statusColors, setStatusColors] = useState({ 
+      color: theme.colors.secondary, 
+      backgroundColor: theme.colors.background 
+    });
 
     const formatTime = (timeString: string) => {
       const [hours, minutes] = timeString.split(':');
@@ -20,6 +25,14 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
       date.setHours(parseInt(hours));
       date.setMinutes(parseInt(minutes));
       return format(date, 'hh:mm a');
+    };
+
+    const isScheduleToday = () => {
+      const now = new Date();
+      const startDate = new Date(parseISO(schedule.startDate).setHours(0, 0, 0, 0));
+      const endDate = new Date(parseISO(schedule.endDate).setHours(23, 59, 59, 999));
+
+      return isWithinInterval(now, {start: startDate, end: endDate});
     };
 
     const getScheduleStatus = () => {
@@ -54,7 +67,17 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(
       }
     };
 
-    const statusColors = getStatusColor();
+    useEffect(() => {
+      setStatusColors(getStatusColor());
+
+      if (isScheduleToday()) {
+        const interval = setInterval(() => {
+          setStatusColors(getStatusColor());
+        }, 1000);
+
+        return () => clearInterval(interval);
+      }
+    }, [schedule]);
 
     return (
       <TouchableOpacity
