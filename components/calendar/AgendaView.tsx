@@ -31,7 +31,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   selectedDate,
   setSelectedDate,
 }) => {
-  const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(true);
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(false);
   const agendaRef = React.useRef<any>(null);
   const displayedItems = items;
 
