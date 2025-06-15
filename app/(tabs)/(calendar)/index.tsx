@@ -2,25 +2,20 @@ import * as React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';
 import {AgendaView} from '@/components/calendar/AgendaView';
-import {ScheduleFormModal} from '@/components/calendar/ScheduleFormModal';
 import {useSchedules} from "@/hooks/calendar/useSchedule";
 import {initializeLocale} from "@/hooks/calendar/useLocale";
+import { useRouter } from 'expo-router';
 
 export default function CalendarScreen() {
   initializeLocale()
+  const router = useRouter();
 
   const {
     selectedDate,
     setSelectedDate,
     selectedSchedule,
     setSelectedSchedule,
-    visible,
-    showModal,
-    hideModal,
     getAgendaItems,
-    setFormData,
-    formData,
-    handleSaveSchedule,
     handleEditSchedule,
     handleDeleteSchedule,
   } = useSchedules();
@@ -45,21 +40,11 @@ export default function CalendarScreen() {
         setSelectedDate={setSelectedDate}
       />
 
-      <ScheduleFormModal
-        visible={visible}
-        onDismiss={hideModal}
-        onSave={handleSaveSchedule}
-        selectedDate={selectedDate}
-        selectedSchedule={selectedSchedule}
-        setFormData={setFormData}
-        formData={formData}
-      />
-
       <FAB
         icon="plus"
         style={styles.fab}
         label="새 일정"
-        onPress={showModal}
+        onPress={() => router.push('/(tabs)/(calendar)/new-schedule')}
         mode="elevated"
         color="white"
       />

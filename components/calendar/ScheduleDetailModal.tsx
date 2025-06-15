@@ -3,12 +3,12 @@ import {StyleSheet, View} from 'react-native';
 import {
   Dialog,
   IconButton,
-  Portal,
   Text,
   useTheme,
   Divider,
 } from 'react-native-paper';
 import {Schedule} from '@/domain/Schedule';
+import {useRouter} from 'expo-router';
 
 interface ScheduleDetailModalProps {
   visible: boolean;
@@ -19,71 +19,73 @@ interface ScheduleDetailModalProps {
 }
 
 export const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
-  visible,
-  schedule,
-  onDismiss,
-  onEdit,
-  onDelete,
-}) => {
+                                                                          visible,
+                                                                          schedule,
+                                                                          onDismiss,
+                                                                          onEdit,
+                                                                          onDelete,
+                                                                        }) => {
   const theme = useTheme();
+  const router = useRouter();
 
   if (!schedule) return null;
 
   return (
-    <Portal>
-      <Dialog visible={visible} onDismiss={onDismiss} style={styles.dialog}>
-        <Dialog.Title style={styles.title}>{schedule.title}</Dialog.Title>
-        <Divider style={styles.divider} />
-        <Dialog.Content>
-          <View style={styles.timeContainer}>
+    <Dialog visible={visible} onDismiss={onDismiss} style={styles.dialog}>
+      <Dialog.Title style={styles.title}>{schedule.title}</Dialog.Title>
+      <Divider style={styles.divider}/>
+      <Dialog.Content>
+        <View style={styles.timeContainer}>
+          <IconButton
+            icon="clock-outline"
+            size={24}
+            iconColor={theme.colors.primary}
+            style={styles.clockIcon}
+          />
+          <View style={styles.timeTextContainer}>
+            <Text variant="bodyMedium" style={styles.dateText}>
+              시작: {new Date(`${schedule.startDate}T${schedule.startTime}`).toLocaleString('ko-KR')}
+            </Text>
+            <Text variant="bodyMedium" style={styles.dateText}>
+              종료: {new Date(`${schedule.endDate}T${schedule.endTime}`).toLocaleString('ko-KR')}
+            </Text>
+          </View>
+        </View>
+        {schedule.description && (
+          <View style={styles.descriptionContainer}>
             <IconButton
-              icon="clock-outline"
+              icon="text-box-outline"
               size={24}
               iconColor={theme.colors.primary}
-              style={styles.clockIcon}
+              style={styles.descriptionIcon}
             />
-            <View style={styles.timeTextContainer}>
-              <Text variant="bodyMedium" style={styles.dateText}>
-                시작: {new Date(`${schedule.startDate}T${schedule.startTime}`).toLocaleString('ko-KR')}
-              </Text>
-              <Text variant="bodyMedium" style={styles.dateText}>
-                종료: {new Date(`${schedule.endDate}T${schedule.endTime}`).toLocaleString('ko-KR')}
-              </Text>
-            </View>
+            <Text variant="bodyMedium" style={styles.description}>
+              {schedule.description}
+            </Text>
           </View>
-          {schedule.description && (
-            <View style={styles.descriptionContainer}>
-              <IconButton
-                icon="text-box-outline"
-                size={24}
-                iconColor={theme.colors.primary}
-                style={styles.descriptionIcon}
-              />
-              <Text variant="bodyMedium" style={styles.description}>
-                {schedule.description}
-              </Text>
-            </View>
-          )}
-        </Dialog.Content>
-        <Divider style={styles.divider} />
-        <Dialog.Actions style={styles.actions}>
-          <IconButton
-            icon="trash-can-outline"
-            size={28}
-            iconColor={theme.colors.error}
-            onPress={() => onDelete(schedule.id)}
-            style={styles.actionButton}
-          />
-          <IconButton
-            icon="pencil-outline"
-            size={28}
-            iconColor={theme.colors.primary}
-            onPress={() => onEdit(schedule)}
-            style={styles.actionButton}
-          />
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
+        )}
+      </Dialog.Content>
+      <Divider style={styles.divider}/>
+      <Dialog.Actions style={styles.actions}>
+        <IconButton
+          icon="trash-can-outline"
+          size={28}
+          iconColor={theme.colors.error}
+          onPress={() => onDelete(schedule.id)}
+          style={styles.actionButton}
+        />
+        <IconButton
+          icon="pencil-outline"
+          size={28}
+          iconColor={theme.colors.primary}
+          onPress={() => {
+            onEdit(schedule);
+            router.push('/(tabs)/(calendar)/new-schedule');
+          }}
+          style={styles.actionButton}
+        />
+      </Dialog.Actions>
+    </Dialog>
   );
 };
 
