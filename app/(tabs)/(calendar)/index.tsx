@@ -5,6 +5,8 @@ import {AgendaView} from '@/components/calendar/AgendaView';
 import {useSchedules} from "@/hooks/calendar/useSchedule";
 import {initializeLocale} from "@/hooks/calendar/useLocale";
 import { useRouter } from 'expo-router';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 export default function CalendarScreen() {
   initializeLocale()
@@ -20,10 +22,21 @@ export default function CalendarScreen() {
     handleDeleteSchedule,
   } = useSchedules();
 
+  const getSelectedMonthTitle = () => {
+    if (!selectedDate) return "캘린더";
+    
+    try {
+      const date = new Date(selectedDate);
+      return format(date, 'yyyy년 M월', { locale: ko });
+    } catch {
+      return "캘린더";
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.Content title="캘린더"/>
+        <Appbar.Content title={getSelectedMonthTitle()}/>
         <Appbar.Action icon="bell-outline" onPress={() => {
         }}/>
       </Appbar.Header>
