@@ -35,6 +35,11 @@ export const AgendaView = React.memo<AgendaViewProps>(({
   const agendaRef = React.useRef<any>(null);
   const displayedItems = items;
 
+  const today = React.useMemo(() => {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+  }, []);
+
   const handleSchedulePress = React.useCallback((schedule: Schedule) => {
     setSelectedSchedule(schedule);
   }, [setSelectedSchedule]);
@@ -62,20 +67,34 @@ export const AgendaView = React.memo<AgendaViewProps>(({
     ({date, state}: { date: { dateString: string; day: number }; state: string }) => {
       if (!isCalendarOpen) {
         const hasSchedules = (displayedItems[date?.dateString ?? ''] ?? []).length > 0;
+        const isToday = date.dateString === today;
+        const isSelected = date.dateString === selectedDate;
+        
         return (
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => handleDayPress({dateString: date.dateString})}
-            style={styles.dayContainer}
+            style={[
+              styles.dayContainer,
+              isToday && styles.todayContainer,
+              isSelected && styles.selectedDayContainer
+            ]}
           >
             <Text style={[
               styles.dayText,
               state === 'disabled' && styles.disabledText,
-              date.dateString === selectedDate && styles.selectedDayText
+              isToday && styles.todayText,
+              isSelected && styles.selectedDayText
             ]}>
               {date.day}
             </Text>
-            {hasSchedules && <View style={styles.scheduleIndicator} />}
+            {hasSchedules && (
+              <View style={[
+                styles.scheduleIndicator,
+                isToday && styles.todayScheduleIndicator,
+                isSelected && styles.selectedScheduleIndicator
+              ]} />
+            )}
           </TouchableOpacity>
         );
       }
@@ -90,7 +109,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         />
       );
     },
-    [displayedItems, handleDayPress, selectedDate, isCalendarOpen]
+    [displayedItems, handleDayPress, selectedDate, isCalendarOpen, today]
   );
 
   const renderItem = React.useCallback(
@@ -143,16 +162,33 @@ const styles = StyleSheet.create({
   dayContainer: {
     alignItems: 'center',
     padding: 5,
+    borderRadius: 16,
+    minWidth: 32,
+    minHeight: 32,
+    justifyContent: 'center',
+  },
+  todayContainer: {
+    backgroundColor: '#E3F2FD',
+    borderWidth: 1,
+    borderColor: '#2196F3',
+  },
+  selectedDayContainer: {
+    backgroundColor: '#2196F3',
   },
   dayText: {
     fontSize: 16,
+    color: '#333',
+  },
+  todayText: {
+    color: '#2196F3',
+    fontWeight: '600',
+  },
+  selectedDayText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   disabledText: {
     color: '#ccc',
-  },
-  selectedDayText: {
-    color: '#2196F3',
-    fontWeight: 'bold',
   },
   scheduleIndicator: {
     width: 4,
@@ -160,5 +196,11 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#2196F3',
     marginTop: 4,
+  },
+  todayScheduleIndicator: {
+    backgroundColor: '#2196F3',
+  },
+  selectedScheduleIndicator: {
+    backgroundColor: '#FFFFFF',
   },
 });
