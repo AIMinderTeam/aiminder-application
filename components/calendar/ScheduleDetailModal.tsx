@@ -16,6 +16,7 @@ interface ScheduleDetailModalProps {
   onDismiss: () => void;
   onEdit: (schedule: Schedule) => void;
   onDelete: (id: string) => void;
+  setSelectedSchedule: (schedule: Schedule | null) => void;
 }
 
 export const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
@@ -24,6 +25,7 @@ export const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
                                                                           onDismiss,
                                                                           onEdit,
                                                                           onDelete,
+                                                                          setSelectedSchedule,
                                                                         }) => {
   const theme = useTheme();
   const router = useRouter();
@@ -71,7 +73,10 @@ export const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
           icon="trash-can-outline"
           size={28}
           iconColor={theme.colors.error}
-          onPress={() => onDelete(schedule.id)}
+          onPress={() => {
+            setSelectedSchedule(null)
+            onDelete(schedule.id)
+          }}
           style={styles.actionButton}
         />
         <IconButton

@@ -133,6 +133,7 @@ export const AgendaView = React.memo<AgendaViewProps>(({
         onDismiss={handleCloseDetail}
         onEdit={onEditSchedule}
         onDelete={onDeleteSchedule}
+        setSelectedSchedule={setSelectedSchedule}
       />
     </>
   );
